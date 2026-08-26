@@ -97,36 +97,42 @@ def decide(req: PurchaseRequest, mem: PurserMemory) -> Decision:
 
 
 def learn_from_outcome(req: PurchaseRequest, dec: Decision, outcome: dict[str, Any],
-                       mem: PurserMemory) -> None:
-    """Update memory after a decision+payment attempt. Called by the session runner."""
+                       mem: PurserMemory) -> str | None:
+    """Update memory after a decision+payment attempt. Returns the ledger
+    (journal) id of the entry, so callers can link a public proof."""
     today = _dt.date.today().isoformat()
     vendor = mem.get_vendor(req.vendor) or {
         "trust": mem.load_policy().new_vendor_trust, "purchases": 0}
 
-    if dec.rule == "dedup":
-        # The refusal itself is worth remembering (auditor hunts these).
-        mem.journal(acted=[f"refused duplicate {req.vendor}:{req.sku}"],
-                    extra={"kind": "refusal", "rule": "dedup", "date": today})
-        return
+    if not dec.approve:
+        # Every refusal is ledger-worthy: the proof pages render these
+        # verbatim (rule + reason) next to settled payments.
+        return mem.journal(
+            acted=[f"refused {req.vendor}:{req.sku} ({dec.rule}): {dec.reason}"],
+            extra={"kind": "refusal", "rule": dec.rule, "reason": dec.reason,
+                   "date": today, "vendor": req.vendor, "sku": req.sku,
+                   "amount_micro": req.amount_micro,
+                   "recalled": dec.recalled[:2]})
 
     status = outcome.get("status", "failed")
     # A simulated payment counts in the ledger (it carries a sim- tx id and
     # keeps its raw status in the journal — never relabeled as "settled").
     paid_ok = status in ("settled", "simulated")
     purchases = int(vendor.get("purchases", 0))
+    ledger_id: str | None = None
     if paid_ok:
         purchases += 1
         mem.record_purchase(req.vendor, req.sku, {
             "date": today, "tx": outcome.get("tx", ""), "amount_micro": req.amount_micro,
             "description": req.description, "requested_by": req.requested_by})
-        mem.journal(
+        ledger_id = mem.journal(
             acted=[f"paid {req.vendor} ${req.amount_micro/1e6:.6f} for {req.sku}"],
             forward=[f"watch vendor {req.vendor} for reliability"],
-            extra={"kind": "payment", "status": "settled", "date": today,
+            extra={"kind": "payment", "status": status, "date": today,
                    "amount_micro": req.amount_micro, "vendor": req.vendor,
                    "tx": outcome.get("tx", "")})
     else:
-        mem.journal(
+        ledger_id = mem.journal(
             acted=[f"payment to {req.vendor} failed: {outcome.get('detail', '?')}"],
             forward=[f"review vendor {req.vendor} before retrying"],
             extra={"kind": "payment", "status": status, "date": today,
@@ -136,3 +142,4 @@ def learn_from_outcome(req: PurchaseRequest, dec: Decision, outcome: dict[str, A
     vendor["last_price_micro"] = req.amount_micro
     vendor["last_outcome"] = status
     mem.upsert_vendor(req.vendor, vendor)
+    return ledger_id

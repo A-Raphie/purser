@@ -67,7 +67,10 @@ def pay_real(req: Any) -> PayResult:
             if response.is_success:
                 settle = http_client.get_payment_settle_response(
                     lambda name: response.headers.get(name))
-                tx = str(settle).split("transaction=")[-1].split(" ")[0].rstrip("'\"")
+                tx = getattr(settle, "transaction", None) or ""
+                tx = str(tx).strip().strip("'\"")
+                if tx and not tx.startswith("0x"):
+                    tx = "0x" + tx  # x402 settle returns unprefixed hashes
                 return PayResult("settled", tx, "x402 settled",
                                  response.text[:200])
             return PayResult("failed", "", f"HTTP {response.status_code}")

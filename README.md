@@ -26,6 +26,43 @@ is not messages — it is Sibyl Memory itself.
 Delete the memory layer and the crew is lobotomized: it re-buys duplicates,
 ignores learned budgets, and trusts vendors it swore off. That is the point.
 
+**Positioning.** The agent-treasury lane is well proven — by deterministic
+policy engines that treat memory as non-authoritative on the money path by
+doctrine. Purser is the inversion those architectures refuse to build:
+judgment that compounds. Qualitative memory (this vendor shorted us twice,
+that bargain recurs, that exception was granted) drives every decision —
+while hard deterministic caps (per-purchase, daily, non-positive-amount
+refusal) still fence the money. Memory decides, code enforces, every decision
+lands in an append-only journal you can verify without a wallet.
+
+## Canonical run — real entries, paid and refused together
+
+The refused row is the product working. Every id below is verifiable in the
+public checker (`/proof?id=…` when the sidecar runs, or `eval/` scripts).
+
+| ledger entry | what happened | amount | onchain |
+|---|---|---|---|
+| spike B, attempt 1 | PAID, response lost in flight, settled — caught by balance reconcile | $0.00375 | balance-verified (the journal-then-reconcile lesson) |
+| spike B, attempt 2 | PAID, receipt in hand | $0.00375 | [0xbbb6d430…](https://basescan.org/tx/0xbbb6d430a7acbd7d8d98d622c6aee050468233bb1405f6e4dce8e7433d605052) |
+| via panel API | PAID | $0.00375 | [0x28ce1b23…](https://basescan.org/tx/0x28ce1b23de3d23bf7945df729274b660e919290c944035b84f09000d6c9750a0) |
+| `87341082-2edd` | PAID through `/api/request`, proof page live | $0.00375 | [0x53c9bb81…](https://basescan.org/tx/0x53c9bb81704cc27e2640cf62fe1b21289f99c056c99c7cd9ee7308235cc8955d) |
+| `2db1f7df-07a7` | **REFUSED** — duplicate of the row above, memory cited the prior purchase | $0.00375 kept | no payment: the guardrail firing |
+
+## Honest status
+
+| surface | state |
+|---|---|
+| Memory core + deterministic decision engine | 🟢 shipped, 18 tests |
+| Fresh-session dedup demo + with/without-memory eval | 🟢 shipped, numbers diverge |
+| Control room, landing, wallet-free proof pages | 🟢 shipped |
+| Real x402 payments on Base mainnet | 🟢 4 settled, receipts above |
+| Trust floor + retirement tombstones | 🟢 shipped |
+| Trust updates from payment outcomes | 🟡 floor only, outcome-driven scores are Phase 2 |
+| Crew (scout / auditor through HOT handoffs) | 🔴 spec'd, Phase 2 |
+| Virtuals ACP job | 🔴 Phase 3 |
+| Demo video + build-in-public posts | 🔴 Phase 4 |
+| Hash-anchored memory snapshots | 🔴 roadmap (provenance of memory) |
+
 ## Architecture
 
 ```
@@ -77,6 +114,9 @@ python eval/run_eval.py
 # the two fonts at build time, so build with network)
 cd panel && npm install && npm run build && cd ..
 (cd src && python -m purser.api)       # http://localhost:8788
+# /       landing with live ledger readout + paste-an-id proof checker
+# /room   the control room (requests, decisions, tiers, wipe)
+# /proof  public receipt page, no wallet no login
 ```
 
 Real payments need `.env` (copy `.env.example`): a funded Base EOA,

@@ -8,8 +8,11 @@ Run: python -m purser.api   (from src/ or with src on PYTHONPATH)
 from __future__ import annotations
 
 import os
+import re
 from pathlib import Path
 from typing import Any
+
+_REAL_TX = re.compile(r"^0x[0-9a-fA-F]{64}$")  # sim- and malformed rows never link
 
 from fastapi import FastAPI
 from fastapi.responses import FileResponse, JSONResponse
@@ -34,7 +37,9 @@ def _db_path() -> str:
 
 
 def _mem() -> PurserMemory:
-    return PurserMemory(_db_path(), tenant=os.environ.get("PURSER_TENANT_ID"))
+    # The panel shares the SAME default tenant as the terminal demos and
+    # spikes (NOT the .env account tenant) or recall reads a different world.
+    return PurserMemory(_db_path())
 
 
 class RequestIn(BaseModel):
@@ -81,8 +86,9 @@ def run_request(body: RequestIn) -> dict[str, Any]:
         outcome = {"status": result.status, "tx": result.tx, "detail": result.detail}
     else:
         outcome = {"status": "refused", "tx": "", "detail": dec.reason}
-    learn_from_outcome(req, dec, outcome, mem)
+    ledger_id = learn_from_outcome(req, dec, outcome, mem)
     return {
+        "ledger_id": ledger_id,
         "decision": {"approve": dec.approve, "rule": dec.rule,
                      "reason": dec.reason, "recalled": dec.recalled},
         "payment": outcome,
@@ -101,6 +107,32 @@ def wipe(confirm: bool = False) -> dict[str, Any]:
         db.unlink()
         return {"wiped": str(db)}
     return {"wiped": None, "note": "nothing to wipe"}
+
+
+@app.get("/api/proof/{event_id}")
+def proof(event_id: str) -> dict[str, Any]:
+    """Wallet-free verification of one ledger entry (payment or refusal)."""
+    mem = _mem()
+    for ev in mem.recent_events(limit=500):
+        if ev.get("id") != event_id:
+            continue
+        extra = ev.get("extra") or {}
+        if extra.get("kind") not in ("payment", "refusal"):
+            return {"error": "event exists but is not a ledger entry", "ts": ev.get("ts")}
+        tx = str(extra.get("tx", "")).strip().strip("'\"")
+        if tx and not tx.startswith("0x"):
+            tx = "0x" + tx  # older journal rows may be unprefixed
+        return {
+            "id": ev.get("id"), "ts": ev.get("ts"), "kind": extra.get("kind"),
+            "rule": extra.get("rule", "ok"),
+            "reason": extra.get("reason", "no duplicate, within caps, vendor acceptable"),
+            "vendor": extra.get("vendor"), "amount_micro": extra.get("amount_micro"),
+            "status": extra.get("status"), "tx": tx or None,
+            "basescan": f"https://basescan.org/tx/{tx}" if _REAL_TX.match(tx) else None,
+            "recalled": extra.get("recalled", []),
+            "acted": ev.get("acted"),
+        }
+    return {"error": f"no ledger entry with id {event_id}"}
 
 
 @app.get("/api/wallet")
@@ -129,17 +161,30 @@ def wallet() -> dict[str, Any]:
     receipts = []
     for ev in mem.recent_events(limit=100):
         extra = ev.get("extra") or {}
-        if extra.get("kind") == "payment" and str(extra.get("tx", "")).startswith("0x"):
+        tx = str(extra.get("tx", "")).strip().strip("'\"")
+        if tx and not tx.startswith("0x"):
+            tx = "0x" + tx
+        if extra.get("kind") == "payment" and _REAL_TX.match(tx):
             receipts.append({
-                "tx": extra.get("tx"), "vendor": extra.get("vendor"),
+                "tx": tx, "vendor": extra.get("vendor"),
                 "amount_micro": extra.get("amount_micro"),
                 "status": extra.get("status"),
-                "basescan": f"https://basescan.org/tx/{extra.get('tx')}"})
+                "basescan": f"https://basescan.org/tx/{tx}"})
     return {"wallet": address, "usdc": usdc, "receipts": receipts}
 
 
 # Serve the built panel if present (python -m purser.api => one process).
 if PANEL_OUT.exists():
+    # StaticFiles(html=True) doesn't resolve /room -> room.html in this
+    # Starlette version, so the routes are explicit.
+    @app.get("/room")
+    def room_page() -> FileResponse:
+        return FileResponse(str(PANEL_OUT / "room.html"))
+
+    @app.get("/proof")
+    def proof_page() -> FileResponse:
+        return FileResponse(str(PANEL_OUT / "proof.html"))
+
     app.mount("/", StaticFiles(directory=str(PANEL_OUT), html=True), name="panel")
 else:
     @app.get("/")
