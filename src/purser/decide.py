@@ -130,6 +130,7 @@ def learn_from_outcome(req: PurchaseRequest, dec: Decision, outcome: dict[str, A
             forward=[f"watch vendor {req.vendor} for reliability"],
             extra={"kind": "payment", "status": status, "date": today,
                    "amount_micro": req.amount_micro, "vendor": req.vendor,
+                   "sku": req.sku,  # auditors reconcile journal↔WARM by this
                    "tx": outcome.get("tx", "")})
     else:
         ledger_id = mem.journal(
@@ -141,5 +142,22 @@ def learn_from_outcome(req: PurchaseRequest, dec: Decision, outcome: dict[str, A
     vendor["purchases"] = purchases
     vendor["last_price_micro"] = req.amount_micro
     vendor["last_outcome"] = status
+
+    # trust engine: outcomes move trust, failure retires
+    policy = mem.load_policy()
+    trust = float(vendor.get("trust", policy.new_vendor_trust))
+    if paid_ok:
+        trust = min(1.0, trust + 0.05)
+    elif status == "failed":
+        trust = trust - 0.15
+    vendor["trust"] = round(trust, 3)
     mem.upsert_vendor(req.vendor, vendor)
+    if trust < policy.min_vendor_trust:
+        mem.retire_vendor(req.vendor, reason=(
+            f"trust {round(trust, 3)} fell below floor {policy.min_vendor_trust} "
+            f"after outcome '{status}' on {req.sku}"))
+        mem.journal(
+            acted=[f"auto-retired vendor {req.vendor}: trust {round(trust, 3)} below floor"],
+            forward=[f"do not buy from {req.vendor} unless re-vouched"],
+            extra={"kind": "retirement", "vendor": req.vendor, "date": today})
     return ledger_id

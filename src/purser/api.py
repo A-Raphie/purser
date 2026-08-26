@@ -73,6 +73,9 @@ def state() -> dict[str, Any]:
     handoff = mem.get_handoff("purser", "auditor")
     if handoff:
         tiers["hot"]["handoff_to_auditor"] = handoff
+    audit = mem._client.get_state("audit")
+    if audit:
+        tiers["hot"]["audit"] = audit.get("body", audit)
     return {"tiers": tiers, "db": _db_path()}
 
 

@@ -57,8 +57,9 @@ public checker (`/proof?id=…` when the sidecar runs, or `eval/` scripts).
 | Control room, landing, wallet-free proof pages | 🟢 shipped |
 | Real x402 payments on Base mainnet | 🟢 4 settled, receipts above |
 | Trust floor + retirement tombstones | 🟢 shipped |
-| Trust updates from payment outcomes | 🟡 floor only, outcome-driven scores are Phase 2 |
-| Crew (scout / auditor through HOT handoffs) | 🔴 spec'd, Phase 2 |
+| Trust updates from payment outcomes | 🟢 settled +0.05, failed −0.15, auto-retire below floor |
+| Crew (scout → purser → auditor through HOT handoffs) | 🟢 shipped, fresh process per role, `scripts/demo_crew.py` |
+| Auditor drift detection | 🟢 reconciles COLD journal vs WARM purchases, flags drift |
 | Virtuals ACP job | 🔴 Phase 3 |
 | Demo video + build-in-public posts | 🔴 Phase 4 |
 | Hash-anchored memory snapshots | 🔴 roadmap (provenance of memory) |
@@ -109,6 +110,10 @@ python scripts/demo_two_sessions.py
 
 # the numbers: with-memory vs amnesia
 python eval/run_eval.py
+
+# the crew: scout -> purser -> auditor, three fresh processes per shift,
+# coordinating ONLY through memory tiers (shift 2 refuses the duplicate)
+python scripts/demo_crew.py
 
 # optional: the control room (build once, then one process; Node fetches
 # the two fonts at build time, so build with network)
