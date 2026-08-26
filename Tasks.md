@@ -31,11 +31,11 @@ Legend: `[ ]` not started · `[~]` in progress · `[x]` done
 ## Phase 1 — Smallest testable slice: dedup across a fresh session (Sep 1–2)
 
 - [ ] `PurserMemory` typed wrapper over SDK (tier discipline enforced)
-- [ ] `decide()`: duplicate check against WARM `purchase:*` + COLD events
-- [ ] Two-session scripted run: session 1 buys, session 2 (fresh process)
+- [x] `decide()`: duplicate check against WARM `purchase:*` + COLD events (dedup/cap/daily/trust/archived)
+- [x] Two-session scripted run: session 1 buys, session 2 (fresh process)
   refuses the same purchase citing the ledger — **this is the core assumption
   in front of reality; everything else is revisable**
-- [ ] Eval harness v0: run scenario with-memory vs without-memory, print both
+- [x] Eval harness v0: with-memory 0 duplicates/0 blacklisted vs amnesia 1/1 — VERDICT: diverging
 
 ## Phase 2 — Judgment + rails (Sep 2–5)
 

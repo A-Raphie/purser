@@ -63,6 +63,21 @@ the submission requires judges to find memory calls in under 2 minutes.)
 TBD — lands with the first working build (Sep 1+). Python 3.10+, Sibyl Memory,
 x402 on Base.
 
+## Memory map (judges: every memory read/write in under 2 minutes)
+
+All memory access goes through ONE module — `src/purser/memory.py` — nothing
+else in the codebase touches Sibyl. The interesting lines:
+
+| What | Where | Calls |
+|---|---|---|
+| Tier wrapper (the only memory module) | `src/purser/memory.py` | `set_entity`/`get_entity` (WARM), `write_event`/`read_events` (COLD), `set_state`/`get_state` (HOT), `set_reference` (REFERENCE), `archive_entity` (ARCHIVE) |
+| Duplicate check reads the ledger | `src/purser/decide.py` → `decide()` | `get_purchase` |
+| Blacklist reads the WARM tombstone | `src/purser/decide.py` → `decide()` | `get_vendor` |
+| Daily cap sums the COLD journal | `src/purser/memory.py` → `spent_today_micro()` | `read_events` |
+| Every payment/decision journaled | `src/purser/decide.py` → `learn_from_outcome()` | `write_event`, `set_entity` |
+| Fresh-session recall proof | `scripts/demo_two_sessions.py` | runs two separate processes; session 2 refuses what session 1 bought |
+| With/without-memory numbers | `eval/run_eval.py` | both arms' raw JSON in `eval/results/` |
+
 ## Prior work declared
 
 - **Settle** (BOT Chain Builder Challenge) — agents with onchain budgets.

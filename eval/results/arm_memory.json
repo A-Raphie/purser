@@ -1,0 +1,14 @@
+{
+  "arm": "memory",
+  "requests": 6,
+  "paid": 3,
+  "refused": 3,
+  "duplicates_paid": 0,
+  "cap_breaches": 0,
+  "retired_vendors_paid": 0,
+  "refusals": [
+    "s2 [dedup] weather.x402.press:lagos-weather-current",
+    "s2 [cap] ai.gpuops.io:big-inference",
+    "s2 [archived] sketchy-oracle:cursed-data"
+  ]
+}

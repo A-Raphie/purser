@@ -1,0 +1,12 @@
+{
+  "arm": "amnesia",
+  "requests": 6,
+  "paid": 5,
+  "refused": 1,
+  "duplicates_paid": 1,
+  "cap_breaches": 0,
+  "retired_vendors_paid": 1,
+  "refusals": [
+    "s2 [cap] ai.gpuops.io:big-inference"
+  ]
+}
