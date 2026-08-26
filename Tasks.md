@@ -7,23 +7,24 @@ Legend: `[ ]` not started · `[~]` in progress · `[x]` done
 - [x] Concept, name (Purser), multiplier stacks locked; decision log started
 - [x] Repo skeleton: MIT, README (architecture + memory contract), .gitignore
 - [x] Sibyl packages installed (cli 0.3.7, client 0.7.0, mcp 0.1.14, hermes)
-- [~] `sibyl init` browser bind + `sibyl status` green — blocked on Raphie completing auth
+- [x] `sibyl init` browser bind + `sibyl status` green — bound, health all green
 - [x] Spike A: tier spike 10/10 (`spikes/spike_a_tiers.py`)
 - [x] Spike B research: Python x402 SDK v2.20.0 confirmed (Base-complete,
       first-party); real cents endpoints found (GPUOps, AgentFund, Lemon
       Toolshed); Mogami facilitator for Base mainnet — DONE, D4 = pure Python
 - [x] Spike C research: ACP agent creation free, sandbox w/ sponsored gas +
       test USDC, `virtuals-acp` SDK path, 1–2 dev-days estimate — DONE
-- [ ] Spike B live: real cents x402 purchase once wallet funded (blocks on wallet)
-      — dev/test on Base Sepolia (free, default facilitator, faucet USDC);
-      mainnet receipts only for the final demo (~$0.10 of the $1)
-- [ ] Wallet: dedicated Base EOA created ✓ (0x58bA…3BcE, key in .env),
-      funded with **$1 USDC on Base** — **Raphie action** (ETH optional,
-      payments are gasless)
+- [x] Spike B live: **two real x402 payments settled on Base mainnet**
+      (weather.x402.press, $0.00375 × 2, tx 0xbbb6d430…, wallet 1.000000 →
+      0.9925). Dev strategy per Raphie: Sepolia-first (free, default
+      facilitator); mainnet receipts only for final demo (~$0.10 of the $1)
+- [x] Wallet: dedicated Base EOA 0x58bA…3BcE funded with **$1 USDC on Base**
+      (key in .env, caps $0.02/purchase, $0.25/day)
 - [x] Spec files (PRD/Architecture/Tasks/Memory/Handoff)
-- [ ] Gates: `idea-autopsy` + `before-you-build` pass, findings folded in
-- [ ] talk-to-users: question script drafted, posted to Sibyl/Base Discords
-- [ ] Wallet: dedicated Base hot wallet created, funded <$5 USDC, key in .env
+- [x] Gates: `idea-autopsy` SURVIVED + `before-you-build` CONTINUE; kill-test
+      = Discord incident recognition (script in docs/)
+- [~] talk-to-users: script drafted; **Raphie to post in Discords before Sep 3**
+- [ ] GitHub: pick account (Ernxto vs A-Raphie), push, public — Raphie call
 
 ## Phase 1 — Smallest testable slice: dedup across a fresh session (Sep 1–2)
 

@@ -5,11 +5,14 @@ Read this first if you're picking up the project. Mirrors current state.
 ## Current state
 
 Pre-build phase (Aug 26, 2026). Hackathon window opens Sep 1; submission
-target Sep 9. Repo scaffolded, Sibyl SDK proven (Spike A 10/10) **and
-authenticated** (account c92fba00…f4fd, FREE tier), spec docs written,
-gates passed (autopsy SURVIVED), x402/ACP research complete — architecture
-resolved to pure Python. Remaining pre-window items: wallet funding,
-first real x402 purchase, Discord validation posts.
+target Sep 9. **All engineering spikes PASS.** Sibyl authenticated + proven
+(Spike A 10/10), two REAL x402 payments settled on Base mainnet (Spike B:
+$0.00375 × 2 to weather.x402.press, tx 0xbbb6d430…, wallet now 0.9925 USDC),
+ACP path researched (free). Gates passed. Remaining: Discord validation posts,
+GitHub account choice + push, then Sep 1 core slice.
+
+Lean budget locked (Raphie): $1 total, caps $0.02/purchase + $0.25/day,
+Sepolia-first dev, mainnet receipts only for the final demo.
 
 ## What's done
 
