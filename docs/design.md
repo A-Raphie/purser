@@ -12,12 +12,26 @@ Judge-engineers at a memory-infra company, crypto-native, terminal-literate.
 They read monospace as truth and evidence as beauty. The page must survive a
 screenshare at 1080p in a 3-minute video.
 
-## Visual direction (confirmed 2026-08-26: "Ship's ledger")
+## Visual direction (pivot confirmed 2026-08-26: "winsznx house style")
 
-Editorial brutalism × terminal command center. Dark ink ground, warm paper
-text, brass reserved for money and tx hashes, harsh borders, zero radius.
-Ledger language throughout: MANIFEST, LEDGER, WATCH. No nautical kitsch
-(no anchors, wheels, waves) — the restraint IS the ship.
+The ship's-ledger dossier look was replaced at the builder's call after two
+review passes. New system (his nine-placement recipe):
+
+- Canvas near-black slate `#0a0b0f`, surfaces `#14161f`/`#1b1e2a`
+- **Two accents**: indigo `#7c6cff` for actions/links, neon green `#34d399`
+  for live/settled/positive states (status dots glow); bad = rose `#fb7185`
+- Geist Sans for everything prose (weight up to 800, tracking -0.02em on
+  numbers/headlines), IBM Plex Mono for data/labels/status
+- 14px radius cards, 10px controls, 999px pills; soft shadow
+  `0 10px 30px -12px rgba(0,0,0,.6)`; hover = border → accent + faint glow
+- Tabular numerals everywhere; live numbers flash green on change
+- Anatomy: landing → room → public proof; status strip with live dot;
+  code/terminal as hero elements; no dead links
+
+## Legacy tokens (superseded, kept for reference)
+
+ink/paper/brass palette and zero-radius rules were the ship's-ledger system;
+`.brass` class names now map to the live-green token.
 
 ## Design tokens
 
