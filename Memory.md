@@ -29,8 +29,9 @@ Supersedes the earlier `decision-log.md` (entries folded in below).
   demo receipts (~$0.10). Caps: $0.02/purchase, $0.25/day. (Original $3–5
   ask was padding; Raphie flagged budget constraints.)
 - **2026-08-26** — Architecture D4 RESOLVED: Python-first payment rail (see above).
-- **2026-08-26** — ⚠ `gh` CLI authed as **Ernxto** but registrations say
-  **github.com/A-Raphie** — resolve before the public repo exists.
+- **2026-08-26** — ~~⚠ `gh` CLI authed as **Ernxto**~~ RESOLVED: the keyring
+  label was stale; the token authenticates as **A-Raphie** (`gh api user`).
+  Public repo pushed: **github.com/A-Raphie/purser**.
 
 ## Conventions
 
