@@ -15,8 +15,11 @@ Legend: `[ ]` not started · `[~]` in progress · `[x]` done
 - [x] Spike C research: ACP agent creation free, sandbox w/ sponsored gas +
       test USDC, `virtuals-acp` SDK path, 1–2 dev-days estimate — DONE
 - [ ] Spike B live: real cents x402 purchase once wallet funded (blocks on wallet)
-- [ ] Wallet: dedicated Base EOA created (cmd in .env.example), funded <$5
-      USDC + gas ETH, key → .env — **Raphie action**
+      — dev/test on Base Sepolia (free, default facilitator, faucet USDC);
+      mainnet receipts only for the final demo (~$0.10 of the $1)
+- [ ] Wallet: dedicated Base EOA created ✓ (0x58bA…3BcE, key in .env),
+      funded with **$1 USDC on Base** — **Raphie action** (ETH optional,
+      payments are gasless)
 - [x] Spec files (PRD/Architecture/Tasks/Memory/Handoff)
 - [ ] Gates: `idea-autopsy` + `before-you-build` pass, findings folded in
 - [ ] talk-to-users: question script drafted, posted to Sibyl/Base Discords

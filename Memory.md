@@ -19,8 +19,11 @@ Supersedes the earlier `decision-log.md` (entries folded in below).
   to the coordination pattern). (Rejected: Bursar, Quaestor, Tamias, Tally.)
 - **2026-08-26** — Coordination via memory tiers ONLY; deterministic decision
   engine, LLM never decides spends; fresh process per session.
-- **2026-08-26** — Budget: gas cents + x402 ≤$5 pre-approved; Virtuals
-  registration quoted first; hard cap ~$25 without approval.
+- **2026-08-26** — Budget (lean): **$1 USDC on Base is the whole ask.** Demo
+  vendors $0.001–0.005/call, x402 is gasless (EIP-3009), ACP = free sandbox.
+  Dev on Base Sepolia (free, default facilitator); mainnet only for final
+  demo receipts (~$0.10). Caps: $0.02/purchase, $0.25/day. (Original $3–5
+  ask was padding; Raphie flagged budget constraints.)
 - **2026-08-26** — Architecture D4 RESOLVED: Python-first payment rail (see above).
 - **2026-08-26** — ⚠ `gh` CLI authed as **Ernxto** but registrations say
   **github.com/A-Raphie** — resolve before the public repo exists.
