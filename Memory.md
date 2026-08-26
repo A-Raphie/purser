@@ -35,6 +35,10 @@ Supersedes the earlier `decision-log.md` (entries folded in below).
 
 ## Gotchas
 
+- Account-bound Sibyl uses tenant `c92fba00-a7d0-4702-b812-cbc914e6f4fd`
+  (account UUID); bare `MemoryClient.local()` defaults to tenant
+  `00000000-…-0001`. Purser's memory core must pin ONE tenant explicitly or
+  recall silently reads a different world.
 - x402 default facilitator `x402.org/facilitator` is **testnet-only** — Base
   mainnet needs Mogami (`facilitator.mogami.tech`, free) or CDP.
 - Base mainnet chain id **8453** vs Sepolia **84532** mix-up = #1 x402 failure.
