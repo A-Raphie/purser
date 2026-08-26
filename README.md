@@ -73,7 +73,8 @@ python scripts/demo_two_sessions.py
 # the numbers: with-memory vs amnesia
 python eval/run_eval.py
 
-# optional: the control room (build once, then one process)
+# optional: the control room (build once, then one process; Node fetches
+# the two fonts at build time, so build with network)
 cd panel && npm install && npm run build && cd ..
 (cd src && python -m purser.api)       # http://localhost:8788
 ```
