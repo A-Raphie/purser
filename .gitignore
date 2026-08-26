@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+
+# Node
+node_modules/
+.next/
+dist/
+
+# Secrets & keys — NEVER commit
+.env
+.env.*
+*.key
+wallet.json
+credentials.json
+
+# Sibyl local DB (regenerated per environment; session DBs are copied to eval-kit logs deliberately)
+*.db
+*.db-journal
+
+# macOS
+.DS_Store
+
+# Demo recording scratch
+recordings/scratch/
