@@ -23,10 +23,17 @@ x402 on Base; income arrives via a Virtuals ACP job.
 - **crew runner** (`src/purser/crew/`) — runs scout/purser/auditor as fresh
   processes per session; handoff strictly via HOT `handoff:*` keys. A session
   starts cold, loads memory, acts, journals, hands off.
-- **payment rail** (`src/purser/pay/`) — x402 paid fetches on Base. [pending
-  Spike B: TS service vs Python client]
-- **acp service** (`src/purser/acp/`) — advertises a service, negotiates,
-  completes one real job. [pending Spike C]
+- **payment rail** (`src/purser/pay/`) — Python `x402[httpx]` v2.20+ (first-party
+  x402 Foundation SDK), Base mainnet `eip155:8453`, USDC `0x8335…2913` via
+  EIP-3009 gasless transfers, production facilitator **Mogami**
+  (`facilitator.mogami.tech`, free, Base) — the default `x402.org/facilitator`
+  is testnet-only. EOA wallet, `EVM_PRIVATE_KEY` env, SDK's built-in $1
+  default spend cap kept on as a safety net.
+- **acp service** (`src/purser/acp/`) — Virtuals ACP via `virtuals-acp` SDK
+  (⚠ NOT IBM's `acp-sdk`). Path: sandbox first (sponsored gas, test USDC,
+  self-evaluation buyer/seller examples), mainnet end-to-end via
+  `BASE_MAINNET_ACP_X402_CONFIG_V2` for the demo if budget allows. Offering:
+  procurement/spend-audit service priced $0.01–0.10 USDC fixed.
 - **eval kit** (`eval/`) — scenario replays: same requests run with-memory
   and without-memory; scorer publishes both counts + raw logs + costs.
 - **inspector panel** (`panel/`, stretch) — read-only web view of tier
@@ -55,9 +62,9 @@ pay duplicates and bad vendors. Product broken by construction. ✓
 | Layer | Choice | Why |
 |---|---|---|
 | Memory | Sibyl Memory (Python SDK 0.7.x) | mandatory sponsor tech; local SQLite+FTS5 |
-| Agent core | Python 3.14 | Sibyl SDK is Python-first |
-| Payments | x402 on Base (TS SDK + service if needed) | [pending Spike B] |
-| ACP | Virtuals ACP | ×1.25 multiplier with Base |
+| Agent core | Python 3.14 | Sibyl SDK, x402 SDK, and virtuals-acp are all Python-first — single-language stack |
+| Payments | x402[httpx] on Base 8453 + Mogami facilitator | Spike B: Python SDK v2.20.0 is first-party and Base-complete |
+| ACP | virtuals-acp (Python) | Spike C: sandbox free; mainnet via x402 route |
 | Panel | Next.js (stretch) | Raphie's home turf |
 | Tests | pytest, dated adversarial names | Sibyl house convention |
 
@@ -81,6 +88,10 @@ Internal Python API (stable seams for tests + eval kit):
 
 ## Open architectural questions
 
-- [pending Spike B] payment rail language boundary (TS service vs Python)
-- [pending Spike C] ACP service definition + registration cost
+- [resolved D4 2026-08-26] Pure Python stack (x402 Python SDK + virtuals-acp
+  are first-party and Base-capable); TS dropped — no service boundary needed
+- Demo vendor shortlist (real x402 endpoints, cents-priced): GPUOps chain
+  data `chain.gpuops.io` ($0.001+), AgentFund SEC/econ data
+  `x402.agentfund.net` ($0.001–0.03), Lemon Toolshed ($0.001/call),
+  GPUOps AI inference ($0.001–0.02), Business Day API ($0.001)
 - [assumption: single-tenant demo — `tenant_id` default is fine for v1]

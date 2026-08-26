@@ -5,27 +5,32 @@ Read this first if you're picking up the project. Mirrors current state.
 ## Current state
 
 Pre-build phase (Aug 26, 2026). Hackathon window opens Sep 1; submission
-target Sep 9. Repo scaffolded, Sibyl SDK proven locally (Spike A 10/10),
-spec docs written. Two research spikes in flight (x402, Virtuals/ACP).
+target Sep 9. Repo scaffolded, Sibyl SDK proven (Spike A 10/10) **and
+authenticated** (account c92fba00…f4fd, FREE tier), spec docs written,
+gates passed (autopsy SURVIVED), x402/ACP research complete — architecture
+resolved to pure Python. Remaining pre-window items: wallet funding,
+first real x402 purchase, Discord validation posts.
 
 ## What's done
 
 - Concept/name/stacks locked (see Memory.md decisions)
 - Repo: MIT, README skeleton (architecture + memory contract), Tasks, spec set
-- Sibyl packages installed in `.venv` (cli 0.3.7, client 0.7.0, mcp 0.1.14)
+- Sibyl packages installed in `.venv`; `sibyl init` bound (browser auth done)
 - Spike A green: `spikes/spike_a_tiers.py` — 10/10 checks, all five tiers
+- Spike B/C research green: pure-Python stack (x402[httpx] + virtuals-acp),
+  Mogami facilitator, real cents endpoints shortlisted, ACP ≈ free
+- Gates: idea-autopsy SURVIVED (kill-test = Discord incident recognition),
+  before-you-build CONTINUE; interview script in docs/user-interview-script.md
 
 ## In progress
 
-- Spike B (x402 SDKs, real paid endpoints, cents purchase, TS-vs-Python call)
-- Spike C (Virtuals registration cost, ACP minimum-viable shape)
-- `sibyl init` browser bind — waiting on Raphie
+- x402 live purchase — blocked on wallet creation + funding
 
 ## Blocked / waiting
 
-- Account bind — Raphie must complete browser auth (`sibyl init`, re-run if expired)
+- Wallet — Raphie: create EOA (cmd in .env.example), fund <$5 USDC on Base + gas ETH
 - GitHub push — blocked on Ernxto vs A-Raphie account decision (Memory.md)
-- Virtuals registration — blocked on cost quote + spend approval
+- Discord validation posts — Raphie, before Sep 3 (script ready)
 
 ## How to run it
 
@@ -38,11 +43,10 @@ sibyl status                     # after browser bind
 
 ## Next steps
 
-1. Complete `sibyl init` bind; verify `sibyl status`
-2. Fold Spike B/C findings into Architecture.md (resolve D4)
-3. Run `idea-autopsy` + `before-you-build` gates
-4. Create + fund the dedicated Base wallet (<$5 USDC, key → .env)
-5. Sep 1: Phase 1 — dedup-across-fresh-session slice
+1. Raphie: fund the wallet (see .env.example), then Spike B live purchase
+2. Raphie: Discord validation posts (docs/user-interview-script.md), pre-Sep 3
+3. Raphie: pick GitHub account (Ernxto vs A-Raphie), push, set repo public
+4. Sep 1: Phase 1 — dedup-across-fresh-session slice (`PurserMemory`, `decide()`)
 
 ## Open questions
 

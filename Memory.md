@@ -5,6 +5,12 @@ Supersedes the earlier `decision-log.md` (entries folded in below).
 
 ## Decisions
 
+- **2026-08-26** — D4 RESOLVED: pure Python stack. Python `x402` SDK v2.20.0
+  (first-party, Base-complete, httpx) + `virtuals-acp` SDK; TS dropped.
+- **2026-08-26** — ACP cost reality: agent creation free (Launch Radar 100
+  VIRTUAL ≈ $75 is OPTIONAL); sandbox has sponsored gas + test USDC → demo-
+  able at $0; mainnet ACP via `BASE_MAINNET_ACP_X402_CONFIG_V2` cheap.
+  Virtuals budget risk downgraded from "real money at risk" to "≈$0–5".
 - **2026-08-26** — x402 treasurer crew on Sibyl + Base + Virtuals ×1.25:
   sponsor-house-pattern + be-early x402 window + schlep-moat + judge-checkable
   PMF artifact. (Rejected: YouTube Channel Brain — workflow smell; research
@@ -15,8 +21,7 @@ Supersedes the earlier `decision-log.md` (entries folded in below).
   engine, LLM never decides spends; fresh process per session.
 - **2026-08-26** — Budget: gas cents + x402 ≤$5 pre-approved; Virtuals
   registration quoted first; hard cap ~$25 without approval.
-- **2026-08-26** — Architecture D4 (TS vs Python payment rail) deferred to
-  Spike B evidence; do not build the rail before that.
+- **2026-08-26** — Architecture D4 RESOLVED: Python-first payment rail (see above).
 - **2026-08-26** — ⚠ `gh` CLI authed as **Ernxto** but registrations say
   **github.com/A-Raphie** — resolve before the public repo exists.
 
@@ -30,6 +35,10 @@ Supersedes the earlier `decision-log.md` (entries folded in below).
 
 ## Gotchas
 
+- x402 default facilitator `x402.org/facilitator` is **testnet-only** — Base
+  mainnet needs Mogami (`facilitator.mogami.tech`, free) or CDP.
+- Base mainnet chain id **8453** vs Sepolia **84532** mix-up = #1 x402 failure.
+- PyPI `acp-sdk` is IBM's — the Virtuals package is **`virtuals-acp`**.
 - `get_state`/`get_reference` wrap payloads in `{"body": ...}`.
 - `get_entity` on missing key raises `NotFoundError` (does not return None).
 - `pip install 'sibyl-memory-cli[mcp]'` — the extra doesn't exist in 0.3.7;

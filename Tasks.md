@@ -9,8 +9,14 @@ Legend: `[ ]` not started · `[~]` in progress · `[x]` done
 - [x] Sibyl packages installed (cli 0.3.7, client 0.7.0, mcp 0.1.14, hermes)
 - [~] `sibyl init` browser bind + `sibyl status` green — blocked on Raphie completing auth
 - [x] Spike A: tier spike 10/10 (`spikes/spike_a_tiers.py`)
-- [ ] Spike B: x402 research + cents purchase + TS-vs-Python decision (D4)
-- [ ] Spike C: Virtuals registration cost quote + ACP minimum-viable shape
+- [x] Spike B research: Python x402 SDK v2.20.0 confirmed (Base-complete,
+      first-party); real cents endpoints found (GPUOps, AgentFund, Lemon
+      Toolshed); Mogami facilitator for Base mainnet — DONE, D4 = pure Python
+- [x] Spike C research: ACP agent creation free, sandbox w/ sponsored gas +
+      test USDC, `virtuals-acp` SDK path, 1–2 dev-days estimate — DONE
+- [ ] Spike B live: real cents x402 purchase once wallet funded (blocks on wallet)
+- [ ] Wallet: dedicated Base EOA created (cmd in .env.example), funded <$5
+      USDC + gas ETH, key → .env — **Raphie action**
 - [x] Spec files (PRD/Architecture/Tasks/Memory/Handoff)
 - [ ] Gates: `idea-autopsy` + `before-you-build` pass, findings folded in
 - [ ] talk-to-users: question script drafted, posted to Sibyl/Base Discords
