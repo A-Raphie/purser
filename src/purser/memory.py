@@ -115,6 +115,23 @@ class PurserMemory:
             return
         self._client.set_entity("purchase", f"{vendor}:{sku}", body)
 
+    def list_vendors(self) -> list[dict[str, Any]]:
+        """All vendor entities in WARM (name + body, flattened)."""
+        out: list[dict[str, Any]] = []
+        for rec in self._client.list_entities():
+            if isinstance(rec, dict) and rec.get("category") == "vendor":
+                body = rec.get("body", rec)
+                row = {"name": rec.get("name", "?")}
+                if isinstance(body, dict):
+                    row.update(body)
+                out.append(row)
+            elif isinstance(rec, str) and ":" in rec:
+                name = rec.split(":", 1)[1]
+                body = self.get_vendor(name)
+                if body is not None:
+                    out.append({"name": name, **body})
+        return out
+
     # ------------------------------------------------ ARCHIVE: retirement
 
     def retire_vendor(self, name: str, reason: str) -> None:

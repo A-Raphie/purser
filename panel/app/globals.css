@@ -1,0 +1,162 @@
+/* Purser control room — ship's ledger tokens (docs/design.md is the source of truth) */
+:root {
+  --ink: #0b0e11;
+  --surface: #12161b;
+  --surface-2: #1a2027;
+  --paper: #e6e1d6;
+  --paper-dim: #8d8878;
+  --brass: #c9a227;
+  --settle: #5b9a6e;
+  --refuse: #c05b44;
+  --border: 1px solid rgba(230, 225, 214, 0.22);
+  --border-strong: 2px solid var(--paper);
+  --font-display: var(--font-display-loaded), Georgia, serif;
+  --font-data: var(--font-data-loaded), ui-monospace, monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--font-data);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* ---- masthead ---- */
+.masthead {
+  border-bottom: var(--border-strong);
+  padding: 14px 18px 10px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.masthead h1 {
+  font-family: var(--font-display);
+  font-size: 40px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  line-height: 1;
+}
+.masthead h1 span { color: var(--brass); }
+.masthead .sub {
+  color: var(--paper-dim);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 11px;
+}
+.mast-facts { display: flex; gap: 22px; align-items: baseline; flex-wrap: wrap; }
+.fact { text-align: right; }
+.fact .k { color: var(--paper-dim); text-transform: uppercase; letter-spacing: 1.5px; font-size: 10px; display: block; }
+.fact .v { font-size: 13px; }
+.fact .v.brass { color: var(--brass); }
+
+/* ---- grid ---- */
+.deck {
+  display: grid;
+  grid-template-columns: 300px 1fr 340px;
+  gap: 0;
+  min-height: calc(100vh - 90px);
+}
+.zone { border-right: var(--border); padding: 14px 16px; }
+.zone:last-child { border-right: none; }
+.zone > h2 {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--paper-dim);
+  border-bottom: var(--border);
+  padding-bottom: 6px;
+  margin-bottom: 10px;
+}
+
+/* ---- forms ---- */
+label { display: block; margin: 10px 0 3px; color: var(--paper-dim); text-transform: uppercase; letter-spacing: 1px; font-size: 10px; }
+input, select {
+  width: 100%;
+  background: var(--surface);
+  color: var(--paper);
+  border: var(--border);
+  border-radius: 0;
+  font-family: var(--font-data);
+  font-size: 12px;
+  padding: 7px 8px;
+}
+input:focus, select:focus { outline: none; border-color: var(--brass); }
+button {
+  font-family: var(--font-data);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  background: var(--paper);
+  color: var(--ink);
+  border: none;
+  border-radius: 0;
+  padding: 9px 14px;
+  cursor: pointer;
+  margin-top: 14px;
+  width: 100%;
+  font-weight: 700;
+}
+button:hover { background: var(--brass); }
+button:disabled { opacity: 0.45; cursor: wait; }
+button.danger { background: transparent; color: var(--refuse); border: 2px solid var(--refuse); }
+button.danger:hover { background: var(--refuse); color: var(--ink); }
+
+/* ---- decision feed ---- */
+.card { border: var(--border); background: var(--surface); margin-bottom: 10px; }
+.card .head {
+  display: flex; justify-content: space-between; gap: 8px;
+  padding: 7px 10px; border-bottom: var(--border);
+  font-size: 12px; align-items: baseline;
+}
+.card.approve .head .verdict { color: var(--settle); font-weight: 700; }
+.card.refuse .head .verdict { color: var(--refuse); font-weight: 700; }
+.card .rule { color: var(--paper-dim); text-transform: uppercase; letter-spacing: 1px; font-size: 10px; }
+.card .body { padding: 8px 10px; }
+.card .reason { color: var(--paper); }
+.card .evidence {
+  margin-top: 6px; padding: 6px 8px;
+  background: var(--surface-2);
+  border-left: 2px solid var(--brass);
+  color: var(--paper-dim);
+  white-space: pre-wrap; word-break: break-all;
+  font-size: 11px;
+}
+.card .meta { margin-top: 6px; color: var(--paper-dim); font-size: 11px; }
+.card .meta .tx { color: var(--brass); }
+.sim-chip {
+  display: inline-block; border: 1px solid var(--brass); color: var(--brass);
+  font-size: 9px; letter-spacing: 1.5px; padding: 1px 5px; text-transform: uppercase;
+}
+
+/* ---- tier inspector ---- */
+.tier { margin-bottom: 12px; }
+.tier h3 { font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: var(--paper-dim); margin-bottom: 4px; }
+.tier .count { color: var(--brass); }
+.rowline {
+  padding: 5px 8px; background: var(--surface); border: var(--border);
+  margin-bottom: 4px; display: flex; justify-content: space-between; gap: 6px;
+  font-size: 11px;
+}
+.rowline .n { color: var(--paper); word-break: break-all; }
+.rowline .d { color: var(--paper-dim); white-space: nowrap; }
+.retired { color: var(--refuse) !important; }
+
+/* ---- receipts strip ---- */
+.receipts {
+  border-top: var(--border-strong);
+  padding: 10px 18px;
+  display: flex; gap: 18px; align-items: baseline; flex-wrap: wrap;
+}
+.receipts h2 { font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: var(--paper-dim); margin-right: 6px; }
+.receipt { font-size: 11px; }
+.receipt a { color: var(--brass); text-decoration: none; border-bottom: 1px solid var(--brass); }
+.receipt a:hover { color: var(--paper); border-color: var(--paper); }
+.receipt .who { color: var(--paper-dim); }
+.empty { color: var(--paper-dim); font-style: italic; }
+
+.note { color: var(--paper-dim); font-size: 11px; margin-top: 8px; }

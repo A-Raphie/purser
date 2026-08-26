@@ -78,6 +78,19 @@ else in the codebase touches Sibyl. The interesting lines:
 | Fresh-session recall proof | `scripts/demo_two_sessions.py` | runs two separate processes; session 2 refuses what session 1 bought |
 | With/without-memory numbers | `eval/run_eval.py` | both arms' raw JSON in `eval/results/` |
 
+## Run the control room
+
+```bash
+cd panel && npm install && npm run build   # static export once
+cd .. && source .venv/bin/activate
+python -m purser.api                        # from src/: serves panel + API
+# open http://localhost:8788
+```
+
+One process, no external services. Run the same request twice and watch the
+second one get refused with the recalled receipt. Wipe the ledger and the
+amnesia twin pays again. Real mode flips the same `pay()` the terminal uses.
+
 ## Prior work declared
 
 - **Settle** (BOT Chain Builder Challenge) — agents with onchain budgets.
