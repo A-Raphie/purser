@@ -60,8 +60,27 @@ the submission requires judges to find memory calls in under 2 minutes.)
 
 ## Install
 
-TBD — lands with the first working build (Sep 1+). Python 3.10+, Sibyl Memory,
-x402 on Base.
+Python 3.10+ and Node 18+ (panel only).
+
+```bash
+python3 -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt        # Sibyl Memory, x402, FastAPI, tests
+python -m pytest tests/ -q             # 14 green
+
+# the core demo: session 2 (fresh process) refuses the duplicate
+python scripts/demo_two_sessions.py
+
+# the numbers: with-memory vs amnesia
+python eval/run_eval.py
+
+# optional: the control room (build once, then one process)
+cd panel && npm install && npm run build && cd ..
+(cd src && python -m purser.api)       # http://localhost:8788
+```
+
+Real payments need `.env` (copy `.env.example`): a funded Base EOA,
+`PURSER_PRIVATE_KEY`, caps. Everything above runs without it in simulate
+mode, clearly labeled.
 
 ## Memory map (judges: every memory read/write in under 2 minutes)
 

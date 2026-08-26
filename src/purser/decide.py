@@ -21,8 +21,8 @@ from .memory import PurserMemory, SpendPolicy
 class PurchaseRequest:
     vendor: str
     sku: str
-    description: str
     amount_micro: int            # price in micro-USDC (1_000_000 == $1)
+    description: str = ""
     url: str = ""
     requested_by: str = "scout"
 
@@ -56,6 +56,13 @@ def decide(req: PurchaseRequest, mem: PurserMemory) -> Decision:
                  f"{prior.get('date', '?')} (tx {str(prior.get('tx', 'none'))[:18]}…). "
                  "Refusing duplicate."),
                 "dedup", recalled=[f"purchase entity: {prior}"], request=req)
+
+    # 0. Non-positive money is not a purchase (negative amounts otherwise
+    #    sail under every cap — caught by the Aug 26 ship rehearsal).
+    if req.amount_micro <= 0:
+        return Decision(
+            False, f"amount must be positive, got {req.amount_micro} micro",
+            "invalid-amount", recalled=[], request=req)
 
     # 3. Per-purchase cap? (REFERENCE policy)
     if req.amount_micro > policy.max_per_purchase_micro:
