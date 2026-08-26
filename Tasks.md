@@ -23,7 +23,9 @@ Legend: `[ ]` not started · `[~]` in progress · `[x]` done
 - [x] Spec files (PRD/Architecture/Tasks/Memory/Handoff)
 - [x] Gates: `idea-autopsy` SURVIVED + `before-you-build` CONTINUE; kill-test
       = Discord incident recognition (script in docs/)
-- [~] talk-to-users: script drafted; **Raphie to post in Discords before Sep 3**
+- [ ] talk-to-users: script drafted — **DEFERRED at Raphie's request (Aug 26)**;
+      can revive any time before ~Sep 8. If never done: drop the quoted-pain
+      PMF framing, pitch pure-technical (audience + Basescan artifacts only)
 - [ ] GitHub: pick account (Ernxto vs A-Raphie), push, public — Raphie call
 
 ## Phase 1 — Smallest testable slice: dedup across a fresh session (Sep 1–2)
