@@ -360,3 +360,92 @@ table.fields a { color: var(--accent); }
 @media (prefers-reduced-motion: reduce) {
   * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }
+
+/* ---- component-harvest additions (on project tokens, zero deps) ---- */
+/* spinner → check morph (transitions.dev free tier) */
+.spinner {
+  width: 12px; height: 12px; border-radius: 50%;
+  border: 2px solid var(--accent-soft); border-top-color: var(--accent);
+  display: inline-block; vertical-align: -1px; margin-right: 6px;
+  animation: spin 700ms linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.check {
+  width: 12px; height: 12px; display: inline-block; vertical-align: -1px; margin-right: 6px;
+}
+.check::before {
+  content: ""; display: block; width: 100%; height: 100%;
+  border-left: 2px solid var(--live); border-bottom: 2px solid var(--live);
+  transform: rotate(-45deg) translate(1px, -3px);
+  animation: draw-check 240ms ease-out both;
+}
+@keyframes draw-check { from { opacity: 0; transform: rotate(-45deg) scale(1.6) translate(1px, -3px); } to { opacity: 1; transform: rotate(-45deg) translate(1px, -3px); } }
+
+/* refusal shake (motion explains the refusal) */
+.card.refuse { animation: shake 300ms ease-out 80ms; }
+@keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-4px); } 60% { transform: translateX(3px); } }
+
+/* context cards (beautifului pattern): source-tagged recalled evidence */
+.ctx { margin-top: 8px; display: flex; flex-direction: column; gap: 6px; }
+.ctx-head { font-family: var(--font-data); font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--dim); }
+.ctx-chunk {
+  display: flex; gap: 8px; align-items: baseline;
+  background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px;
+  padding: 7px 10px;
+}
+.ctx-src {
+  flex-shrink: 0; border-radius: 999px; padding: 2px 8px;
+  font-family: var(--font-data); font-size: 9px; letter-spacing: 1px; text-transform: uppercase;
+}
+.ctx-src.src-warm { background: var(--live-soft); color: var(--live); }
+.ctx-src.src-cold { background: var(--accent-soft); color: var(--accent); }
+.ctx-body { color: var(--muted); font-size: 10.5px; word-break: break-all; }
+
+/* tool chips */
+.tchip {
+  border-radius: 999px; padding: 2px 9px; margin-right: 6px;
+  background: var(--surface-2); border: 1px solid var(--border);
+  font-family: var(--font-data); font-size: 9.5px; letter-spacing: 1px; text-transform: uppercase; color: var(--muted);
+}
+.card .meta { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+
+/* tabs with sliding pill */
+.tabs {
+  position: relative; display: grid; grid-template-columns: repeat(3, 1fr);
+  background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-s);
+  padding: 3px; margin-bottom: 12px;
+}
+.tab {
+  position: relative; z-index: 1; background: none; border: none; color: var(--muted);
+  min-height: 32px; padding: 0 8px; border-radius: 8px; cursor: pointer;
+  font-family: var(--font-data); font-size: 10.5px; letter-spacing: 1px; text-transform: uppercase;
+  box-shadow: none;
+}
+.tab:hover { color: var(--fg); box-shadow: none; }
+.tab.on { color: var(--fg); }
+.tab-pill {
+  position: absolute; top: 3px; left: 3px; width: calc((100% - 6px) / 3); height: calc(100% - 6px);
+  background: var(--surface); border: 1px solid var(--border-strong); border-radius: 8px;
+  transition: transform 200ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* toasts (rise + fade + blur + scale) */
+.toasts { position: fixed; right: 18px; bottom: 18px; display: flex; flex-direction: column; gap: 8px; z-index: 50; }
+.toast {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--surface); border: 1px solid var(--border-strong);
+  border-radius: var(--radius-s); padding: 11px 14px; max-width: 380px;
+  box-shadow: var(--shadow); font-size: 12.5px;
+  animation: toast-in 220ms ease-out both;
+}
+.toast.ok { border-color: rgba(52, 211, 153, 0.4); }
+.toast.bad { border-color: rgba(251, 113, 133, 0.4); }
+@keyframes toast-in { from { opacity: 0; transform: translateY(10px) scale(0.96); filter: blur(4px); } to { opacity: 1; transform: none; filter: none; } }
+
+/* smaller status dots for rows/toasts */
+.dot.sm { width: 6px; height: 6px; margin-right: 7px; }
+.dot.dead { background: var(--bad); box-shadow: 0 0 8px var(--bad-soft); }
+
+/* number pop-in for ticking values */
+.tick.hot { animation: numpop 260ms ease-out; }
+@keyframes numpop { 0% { transform: scale(1.06); filter: blur(1.5px); } 100% { transform: scale(1); filter: none; } }
