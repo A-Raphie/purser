@@ -5,6 +5,10 @@ Supersedes the earlier `decision-log.md` (entries folded in below).
 
 ## Decisions
 
+- **2026-08-26** — Control room shipped pre-window: "Ship's ledger" direction
+  (Raphie-confirmed), Next.js static export served by FastAPI sidecar, one
+  process on :8788. E2E in-browser: duplicate refused w/ evidence card,
+  danger-gated wipe, amnesia re-buy. Panel stays cut-first in kill criteria.
 - **2026-08-26** — D4 RESOLVED: pure Python stack. Python `x402` SDK v2.20.0
   (first-party, Base-complete, httpx) + `virtuals-acp` SDK; TS dropped.
 - **2026-08-26** — ACP cost reality: agent creation free (Launch Radar 100
@@ -38,6 +42,11 @@ Supersedes the earlier `decision-log.md` (entries folded in below).
 
 ## Gotchas
 
+- Next 15.1.6 cannot use TypeScript 7 (npm's default resolve) — the build
+  silently exits during type-check claiming TS is missing. Pin
+  `typescript@5.7.3` in panel/.
+- Port 8000 on this machine belongs to Pricewise (Raphie's other project).
+  The panel sidecar defaults to **8788** (`PURSER_PANEL_PORT` overrides).
 - Account-bound Sibyl uses tenant `c92fba00-a7d0-4702-b812-cbc914e6f4fd`
   (account UUID); bare `MemoryClient.local()` defaults to tenant
   `00000000-…-0001`. Purser's memory core must pin ONE tenant explicitly or
