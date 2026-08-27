@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { Sparkline } from "../Sparkline";
 
 type Decision = {
   ledger_id: string | null;
@@ -16,6 +17,10 @@ type State = {
     warm: { vendors: { name: string; trust?: number; status?: string; purchases?: number }[]; purchases: { vendor?: string; amount_micro?: number; date?: string }[] };
     cold_count: number;
     hot: Record<string, unknown>;
+    spend_series?: { date: string; cumulative_micro: number }[];
+    spent_today_micro?: number;
+    daily_cap_micro?: number;
+    refusals_total?: number;
   };
 };
 
@@ -130,6 +135,11 @@ export default function Room() {
   const refusals = feed.filter((d) => !d.pending && !d.decision.approve).length;
   const heroSpent = purchases.reduce((a, p) => a + (p.amount_micro ?? 0), 0);
   const lastTx = receipts[0]?.tx?.slice(0, 10) ?? "none yet";
+  const series = (state?.tiers.spend_series ?? []).map((s) => s.cumulative_micro);
+  const spentToday = state?.tiers.spent_today_micro ?? 0;
+  const dailyCap = state?.tiers.daily_cap_micro ?? 250_000;
+  const budgetPct = Math.min(100, (spentToday / Math.max(1, dailyCap)) * 100);
+  const hot = (state?.tiers.hot ?? {}) as Record<string, { shift?: number; clean?: boolean; checked?: number } | undefined>;
 
   const tabs: { id: Tab; label: string; count: number }[] = [
     { id: "vendors", label: "vendors", count: vendors.length },
@@ -165,22 +175,62 @@ export default function Room() {
         <span className="dot" aria-hidden="true" /> LIVE · LEDGER · SIBYL MEMORY · BASE 8453 · LAST TX <span className="num">{lastTx}…</span>
       </div>
 
-      <section className="hero-metric" aria-label="ledger totals">
-        <div className="hm">
+      <section className="bridge" aria-label="the bridge: totals, spend curve, budget">
+        <div className="bridge-hero">
           <span className="k">spent on record</span>
-          <span className="v money num">{usd(heroSpent)}</span>
-          <span className="chip ok">{purchases.length} payments</span>
+          <span className="hero-num num">{usd(heroSpent)}</span>
+          <span className="chips">
+            <span className="chip ok">{purchases.length} payments</span>
+            <span className="chip ok">0 duplicates</span>
+            <span className="chip">{String(state?.tiers.refusals_total ?? 0)} refusals all-time</span>
+          </span>
         </div>
-        <div className="hm">
-          <span className="k">duplicates paid</span>
-          <span className="v num">0</span>
-          <span className="chip ok">memory active</span>
+        <div className="bridge-spark">
+          <span className="k">spend curve · cumulative</span>
+          <Sparkline points={series} width={220} height={52} />
+          <span className="spark-note mono dim">
+            {series.length > 0
+              ? `${series.length} day${series.length > 1 ? "s" : ""} · ${usd(series[series.length - 1])} total`
+              : "no payments yet"}
+          </span>
         </div>
-        <div className="hm">
-          <span className="k">refusals this viewing</span>
-          <span className="v num">{String(refusals)}</span>
-          <span className="chip">{feed.length} decisions</span>
+        <div className="bridge-budget">
+          <span className="k">today vs daily cap</span>
+          <div className="budget-bar" role="progressbar"
+               aria-valuenow={Math.round(budgetPct)} aria-valuemin={0} aria-valuemax={100}>
+            <div className={`budget-fill ${budgetPct > 80 ? "over" : ""}`}
+                 style={{ width: `${Math.max(2, budgetPct)}%` }} />
+          </div>
+          <span className="spark-note mono num">
+            {usd(spentToday)} / {usd(dailyCap)} · {Math.round(budgetPct)}%
+          </span>
         </div>
+      </section>
+
+      <section className="crew-strip" aria-label="crew coordination">
+        {(["scout", "purser", "auditor"] as const).map((role, i) => {
+          const s = hot[`session_${role}`];
+          return (
+            <div key={role} className="crew-card">
+              {i > 0 && <span className="crew-arrow" aria-hidden="true">→</span>}
+              <span className={`dot sm ${s ? "" : "dead"}`} aria-hidden="true" />
+              <span className="crew-role">{role}</span>
+              <span className="crew-meta mono dim">
+                {s ? `shift ${String(s.shift ?? "?")} · active` : "idle"}
+              </span>
+            </div>
+          );
+        })}
+        {hot.audit && (
+          <div className="crew-card audit">
+            <span className="crew-role">audit</span>
+            <span className={`crew-meta mono ${hot.audit.clean ? "oklive" : "retired"}`}>
+              {hot.audit.clean
+                ? `${String(hot.audit.checked ?? 0)} checked · clean`
+                : "drift flagged"}
+            </span>
+          </div>
+        )}
       </section>
 
       <div className="deck">
@@ -286,13 +336,20 @@ export default function Room() {
                 <div className="tier">
                   {vendors.length === 0 && <p className="empty">empty ledger. Run a request.</p>}
                   {vendors.map((v) => (
-                    <div key={v.name} className="rowline">
-                      <span className={`n ${v.status === "retired" ? "retired" : ""}`}>
-                        <span className={`dot sm ${v.status === "retired" ? "dead" : ""}`} aria-hidden="true" /> {v.name}
-                      </span>
-                      <span className="d">
-                        {v.status === "retired" ? "retired" : `trust ${v.trust ?? "—"} · ${v.purchases ?? 0} buys`}
-                      </span>
+                    <div key={v.name} className="vendor-row">
+                      <div className="rowline">
+                        <span className={`n ${v.status === "retired" ? "retired" : ""}`}>
+                          <span className={`dot sm ${v.status === "retired" ? "dead" : ""}`} aria-hidden="true" /> {v.name}
+                        </span>
+                        <span className="d">
+                          {v.status === "retired" ? "retired" : `${v.purchases ?? 0} buys`}
+                        </span>
+                      </div>
+                      <div className="trustbar" role="img"
+                           aria-label={`trust ${(v.trust ?? 0).toFixed(2)} of 1`}>
+                        <div className={`trustfill ${v.status === "retired" ? "dead" : ""}`}
+                             style={{ width: `${Math.round((v.trust ?? 0) * 100)}%` }} />
+                      </div>
                     </div>
                   ))}
                 </div>

@@ -7,6 +7,7 @@ Run: python -m purser.api   (from src/ or with src on PYTHONPATH)
 """
 from __future__ import annotations
 
+import datetime as _dt
 import os
 import re
 from pathlib import Path
@@ -67,6 +68,27 @@ def state() -> dict[str, Any]:
         if extra.get("kind") == "payment" and extra.get("status") in ("settled", "simulated"):
             purchases.append(extra)
     tiers["warm"]["purchases"] = purchases
+
+    # bridge-band data: spend sparkline, budget bar, refusal count
+    by_date: dict[str, int] = {}
+    refusals_total = 0
+    for ev in events:
+        extra = ev.get("extra") or {}
+        if extra.get("kind") == "payment" and extra.get("status") in ("settled", "simulated"):
+            day = str(extra.get("date", "?"))
+            by_date[day] = by_date.get(day, 0) + int(extra.get("amount_micro", 0))
+        elif extra.get("kind") == "refusal":
+            refusals_total += 1
+    series, run = [], 0
+    for day in sorted(by_date):
+        run += by_date[day]
+        series.append({"date": day, "cumulative_micro": run})
+    today = _dt.date.today().isoformat()
+    tiers["spend_series"] = series
+    tiers["spent_today_micro"] = by_date.get(today, 0)
+    tiers["daily_cap_micro"] = mem.load_policy().daily_cap_micro
+    tiers["refusals_total"] = refusals_total
+
     session = mem.get_session()
     if session:
         tiers["hot"]["session"] = session

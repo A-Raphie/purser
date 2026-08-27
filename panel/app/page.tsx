@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { Sparkline } from "./Sparkline";
 
 type Live = {
   payments: number;
@@ -8,6 +9,7 @@ type Live = {
   spent_micro: number;
   vendors: number;
   last_tx: string;
+  series: number[];
 };
 
 type Receipt = { tx: string; vendor: string; amount_micro: number; basescan: string };
@@ -43,12 +45,14 @@ export default function Landing() {
       const w = await fetch("/api/wallet").then((r) => r.json());
       const payments = s.tiers.warm.purchases ?? [];
       const rec = w.receipts ?? [];
+      const series = (s.tiers.spend_series ?? []).map((x: { cumulative_micro: number }) => x.cumulative_micro);
       setLive({
         payments: payments.length,
         refusals: Math.max(0, s.tiers.cold_count - payments.length),
         spent_micro: payments.reduce((a: number, p: { amount_micro?: number }) => a + (p.amount_micro ?? 0), 0),
         vendors: (s.tiers.warm.vendors ?? []).length,
         last_tx: rec[0]?.tx?.slice(0, 12) ?? "pending",
+        series,
       });
       setReceipts(rec);
       setErr(false);
@@ -125,6 +129,7 @@ export default function Landing() {
                 <div className="stat big">
                   <span className="k">spent on record</span>
                   <span className="v"><Tick value={usd(live.spent_micro)} /></span>
+                  <Sparkline points={live.series} width={240} height={40} className="inst-spark" />
                   <span className="chip ok">{live.payments} payments settled</span>
                 </div>
                 <div className="stat-row">

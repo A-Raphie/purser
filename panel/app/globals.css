@@ -473,3 +473,69 @@ table.fields a { color: var(--accent); }
 
 /* brand dot reads indigo everywhere (matches room masthead) */
 .topbar .brand .brass, .foot .brand .brass { color: var(--accent); }
+
+/* ---- the bridge: hero band with sparkline + budget bar ---- */
+.bridge {
+  display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 0;
+  border-bottom: 1px solid var(--border); background: var(--surface);
+  background-image: radial-gradient(500px 200px at 15% 0%, var(--live-soft), transparent 70%);
+}
+.bridge > div { padding: 22px 22px 18px; border-right: 1px solid var(--border); }
+.bridge > div:last-child { border-right: none; }
+.bridge .k {
+  display: block; font-family: var(--font-data); font-size: 10px;
+  letter-spacing: 2px; text-transform: uppercase; color: var(--dim); margin-bottom: 6px;
+}
+.hero-num {
+  display: block; font-size: clamp(44px, 5.2vw, 68px); font-weight: 800;
+  letter-spacing: -0.03em; line-height: 1; color: var(--live);
+  text-shadow: 0 0 24px var(--live-soft);
+}
+.bridge-hero .chips { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+.bridge-spark svg { display: block; margin-top: 8px; }
+.bridge-budget .budget-bar {
+  height: 10px; border-radius: 999px; background: var(--surface-2);
+  border: 1px solid var(--border); overflow: hidden; margin-top: 10px;
+}
+.budget-fill {
+  height: 100%; border-radius: 999px; background: var(--live);
+  box-shadow: 0 0 10px var(--live-soft); transition: width 300ms ease;
+}
+.budget-fill.over { background: var(--bad); box-shadow: 0 0 10px var(--bad-soft); }
+.spark-note { display: block; margin-top: 8px; font-size: 11px; color: var(--muted); }
+.spark-note.num { font-family: var(--font-data); }
+
+/* ---- crew strip ---- */
+.crew-strip {
+  display: flex; align-items: stretch; gap: 0;
+  border-bottom: 1px solid var(--border); background: var(--bg);
+  padding: 10px 20px; flex-wrap: wrap;
+}
+.crew-card {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+  padding: 8px 14px; margin-right: 4px;
+  transition: border-color 140ms ease, box-shadow 140ms ease;
+}
+.crew-card:hover { border-color: var(--border-strong); box-shadow: 0 0 14px var(--glow); }
+.crew-card.audit { border-color: rgba(52, 211, 153, 0.35); }
+.crew-arrow { color: var(--dim); margin-right: 10px; font-size: 14px; }
+.crew-role { font-weight: 700; font-size: 13px; text-transform: lowercase; }
+.crew-meta { font-size: 10px; letter-spacing: 1px; }
+.crew-meta.oklive { color: var(--live); }
+
+/* ---- vendor trust bars ---- */
+.vendor-row { margin-bottom: 8px; }
+.vendor-row .rowline { margin-bottom: 4px; }
+.trustbar {
+  height: 5px; border-radius: 999px; background: var(--surface-2);
+  border: 1px solid var(--border); overflow: hidden;
+}
+.trustfill { height: 100%; background: var(--live); border-radius: 999px; transition: width 300ms ease; }
+.trustfill.dead { background: var(--bad); }
+
+@media (max-width: 900px) { .bridge { grid-template-columns: 1fr; } .bridge > div { border-right: none; border-bottom: 1px solid var(--border); } }
+
+/* landing instrument: bigger hero + sparkline */
+.stat.big .v { font-size: 56px; }
+.inst-spark { margin: 10px 0 8px; display: block; }
