@@ -144,8 +144,7 @@ export default function Room() {
         <div>
           <h1>purser<span>.</span></h1>
           <div className="sub">a treasurer that never forgets a payment</div>
-        </div>
-        <div className="mast-facts">
+        </div>        <div className="mast-facts">
           <div className="fact">
             <span className="k">wallet</span>
             <span className="v">{wallet?.wallet ? `${wallet.wallet.slice(0, 8)}…${wallet.wallet.slice(-6)}` : "not set"}</span>
@@ -169,7 +168,7 @@ export default function Room() {
       <section className="hero-metric" aria-label="ledger totals">
         <div className="hm">
           <span className="k">spent on record</span>
-          <span className="v num">{usd(heroSpent)}</span>
+          <span className="v money num">{usd(heroSpent)}</span>
           <span className="chip ok">{purchases.length} payments</span>
         </div>
         <div className="hm">
@@ -313,18 +312,32 @@ export default function Room() {
 
               {tab === "hot" && (
                 <div className="tier">
-                  {state.tiers.hot?.session ? (
-                    <div className="rowline">
-                      <span className="n">session {String((state.tiers.hot.session as { n?: number }).n ?? "?")}</span>
-                      <span className="d">active</span>
-                    </div>
-                  ) : (
-                    <p className="empty">no session state yet. Run a request.</p>
+                  {(["scout", "purser", "auditor"] as const).map((role) => {
+                    const s = state.tiers.hot?.[`session_${role}`] as { shift?: number } | undefined;
+                    return s ? (
+                      <div key={role} className="rowline">
+                        <span className="n"><span className="dot sm" aria-hidden="true" /> {role}</span>
+                        <span className="d">shift {String(s.shift ?? "?")} · active</span>
+                      </div>
+                    ) : null;
+                  })}
+                  {!state.tiers.hot?.session_scout && !state.tiers.hot?.session && (
+                    <p className="empty">no session state yet. Run a request or a crew shift.</p>
                   )}
                   {state.tiers.hot?.handoff_to_auditor && (
                     <div className="rowline">
                       <span className="n">handoff → auditor</span>
                       <span className="d">queued</span>
+                    </div>
+                  )}
+                  {state.tiers.hot?.audit && (
+                    <div className="rowline">
+                      <span className="n">audit · shift {String((state.tiers.hot.audit as { shift?: number }).shift ?? "?")}</span>
+                      <span className={`d ${(state.tiers.hot.audit as { clean?: boolean }).clean ? "" : "retired"}`}>
+                        {(state.tiers.hot.audit as { clean?: boolean }).clean
+                          ? `${String((state.tiers.hot.audit as { checked?: number }).checked ?? 0)} checked · clean`
+                          : "drift flagged"}
+                      </span>
                     </div>
                   )}
                 </div>

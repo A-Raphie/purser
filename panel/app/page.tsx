@@ -79,7 +79,7 @@ export default function Landing() {
   return (
     <main>
       <header className="topbar">
-        <span className="brand">PURSER<span className="brass">.</span></span>
+        <span className="brand">purser<span className="brass">.</span></span>
         <span className="topnav">
           <a href="#problem">problem</a>
           <a href="#how">how</a>
@@ -236,7 +236,7 @@ REFUSED [dedup]
       </section>
 
       <footer className="foot">
-        <span className="brand">PURSER<span className="brass">.</span></span>
+        <span className="brand">purser<span className="brass">.</span></span>
         <span className="credit mono">
           solo build · team Raphie leveling ·
           <a href="https://github.com/A-Raphie/purser"> github.com/A-Raphie/purser</a> · MIT

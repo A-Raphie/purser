@@ -449,3 +449,27 @@ table.fields a { color: var(--accent); }
 /* number pop-in for ticking values */
 .tick.hot { animation: numpop 260ms ease-out; }
 @keyframes numpop { 0% { transform: scale(1.06); filter: blur(1.5px); } 100% { transform: scale(1); filter: none; } }
+
+/* ---- audit fixes 2026-08-27 ---- */
+/* contrast floor: --dim on bg was ~2.7:1, below WCAG AA for small text */
+:root { --dim: #7a8199; }
+
+/* proof page header (classes were lost in the style pivot) */
+.masthead.slim { padding: 12px 20px; }
+.masthead.slim h1 { font-size: 17px; }
+.runlink {
+  color: var(--accent); text-decoration: none; align-self: center;
+  border: 1px solid var(--accent-soft); border-radius: 999px; padding: 7px 15px;
+  font-size: 12px; font-weight: 600; transition: border-color 140ms ease, box-shadow 140ms ease;
+}
+.runlink:hover { border-color: var(--accent); box-shadow: 0 0 16px var(--glow); }
+
+/* pending decision card gets a visible identity */
+.card.pending { border-color: var(--accent-soft); }
+.card.pending .verdict { color: var(--accent); font-weight: 700; }
+
+/* room hero numbers match the landing instrument (green for the money metric) */
+.hm .v.money { color: var(--live); }
+
+/* brand dot reads indigo everywhere (matches room masthead) */
+.topbar .brand .brass, .foot .brand .brass { color: var(--accent); }

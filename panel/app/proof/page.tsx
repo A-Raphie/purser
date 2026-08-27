@@ -35,7 +35,7 @@ function ProofBody() {
     <main>
       <header className="masthead slim">
         <div>
-          <h1>PURSER<span>.</span></h1>
+          <h1>purser<span>.</span></h1>
           <div className="sub">public ledger proof · no wallet, no login</div>
         </div>
         <a className="runlink" href="/room">ledger room ›</a>

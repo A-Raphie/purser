@@ -76,6 +76,10 @@ def state() -> dict[str, Any]:
     audit = mem._client.get_state("audit")
     if audit:
         tiers["hot"]["audit"] = audit.get("body", audit)
+    for role in ("scout", "purser", "auditor"):
+        s = mem._client.get_state(f"session:{role}")
+        if s:
+            tiers["hot"][f"session_{role}"] = s.get("body", s)
     return {"tiers": tiers, "db": _db_path()}
 
 

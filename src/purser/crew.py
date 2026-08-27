@@ -105,10 +105,16 @@ def run_auditor(db: str, shift: int) -> dict[str, Any]:
             payments.append(extra)
 
     drift: list[str] = []
+    legacy = 0
     checked = 0
     for p in payments:
-        checked += 1
         vendor, sku = p.get("vendor", "?"), p.get("sku", "")
+        if not sku:
+            # rows journaled before the sku schema (pre-Aug-27): honest
+            # history, not reconcilable, reported separately from drift
+            legacy += 1
+            continue
+        checked += 1
         if mem.get_purchase(vendor, sku) is None:
             drift.append(f"journal payment {vendor}:{sku} has no WARM purchase entity")
 
@@ -117,8 +123,8 @@ def run_auditor(db: str, shift: int) -> dict[str, Any]:
         if handoff["ledger_id"] not in ids:
             drift.append("purser handed off a ledger id that is not in the journal")
 
-    verdict = {"shift": shift, "checked": checked, "drift": drift,
-               "clean": not drift,
+    verdict = {"shift": shift, "checked": checked, "legacy_rows": legacy,
+               "drift": drift, "clean": not drift,
                "note": "reconciled COLD journal against WARM purchases"}
     mem._client.set_state("audit", verdict)
     if handoff:
