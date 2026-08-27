@@ -18,7 +18,10 @@ The ship's-ledger dossier look was replaced at the builder's call after two
 review passes. New system (his nine-placement recipe):
 
 - Canvas near-black slate `#0a0b0f`, surfaces `#14161f`/`#1b1e2a`
-- **Two accents**: indigo `#7c6cff` for actions/links, neon green `#34d399`
+- **Two accents**: Sibyl amber `#e0a63c` for actions/links/brand (sponsor-brand
+  rule applied Aug 27: sibyllabs.org and hack.sibyllabs.org both brand
+  amber/gold on dark and cream; indigo `#7c6cff` was the pre-swap generic),
+  neon green `#34d399`
   for live/settled/positive states (status dots glow); bad = rose `#fb7185`
 - Geist Sans for everything prose (weight up to 800, tracking -0.02em on
   numbers/headlines), IBM Plex Mono for data/labels/status
