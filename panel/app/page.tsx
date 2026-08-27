@@ -88,6 +88,7 @@ export default function Landing() {
           <a href="#problem">problem</a>
           <a href="#how">how</a>
           <a href="#proof">proof</a>
+          <a href="https://github.com/A-Raphie/purser" target="_blank" rel="noreferrer">github ↗</a>
           <a href="/room">ledger room ›</a>
         </span>
       </header>
@@ -166,7 +167,8 @@ REFUSED [dedup]
           </div>
           <div className="rise d1">
             <p className="tbl-title">same six requests, two worlds</p>
-            <table className="mini">
+            <div className="table-scroll">
+              <table className="mini">
               <thead><tr><th>metric</th><th className="num">with memory</th><th className="num">amnesia</th></tr></thead>
               <tbody>
                 <tr><td>duplicates paid</td><td className="num hero-zero">0</td><td className="num bad">1</td></tr>
@@ -174,6 +176,7 @@ REFUSED [dedup]
                 <tr><td>requests refused</td><td className="num hero-zero">3</td><td className="num bad">1</td></tr>
               </tbody>
             </table>
+            </div>
             <p className="cite">live output of <span className="mono">eval/run_eval.py</span> · raw JSON committed in <span className="mono">eval/results/</span></p>
           </div>
         </div>

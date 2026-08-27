@@ -48,6 +48,12 @@ public checker (`/proof?id=…` when the sidecar runs, or `eval/` scripts).
 | `87341082-2edd` | PAID through `/api/request`, proof page live | $0.00375 | [0x53c9bb81…](https://basescan.org/tx/0x53c9bb81704cc27e2640cf62fe1b21289f99c056c99c7cd9ee7308235cc8955d) |
 | `2db1f7df-07a7` | **REFUSED** — duplicate of the row above, memory cited the prior purchase | $0.00375 kept | no payment: the guardrail firing |
 
+Ledger entry ids are per-database: the panel's local ledger resets when you
+wipe it (that is the amnesia demo), so `87341082-2edd` / `2db1f7df-07a7`
+resolve only until the next wipe. The **onchain tx hashes above are
+permanent** — those verify on Basescan forever. To see a live refusal,
+run the same request twice in the panel and open its "public proof" link.
+
 ## Honest status
 
 | surface | state |

@@ -15,7 +15,8 @@ from typing import Any
 
 _REAL_TX = re.compile(r"^0x[0-9a-fA-F]{64}$")  # sim- and malformed rows never link
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
@@ -30,6 +31,16 @@ DB_ENV = "PURSER_PANEL_DB"
 PANEL_OUT = Path(__file__).resolve().parent.parent.parent / "panel" / "out"
 
 app = FastAPI(title="purser control room")
+app.add_middleware(GZipMiddleware, minimum_size=1024)
+
+
+@app.middleware("http")
+async def cache_static(request: Request, call_next):
+    """Hashed build assets never change: let the browser keep them."""
+    response = await call_next(request)
+    if request.url.path.startswith("/_next/static"):
+        response.headers["Cache-Control"] = "public, max-age=31536000, immutable"
+    return response
 
 
 def _db_path() -> str:

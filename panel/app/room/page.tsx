@@ -188,6 +188,18 @@ export default function Room() {
   ];
   const activeIdx = tabs.findIndex((t) => t.id === tab);
 
+  function onTabKey(e: React.KeyboardEvent, idx: number) {
+    const next = e.key === "ArrowRight" ? (idx + 1) % tabs.length
+      : e.key === "ArrowLeft" ? (idx + tabs.length - 1) % tabs.length
+      : e.key === "Home" ? 0
+      : e.key === "End" ? tabs.length - 1
+      : null;
+    if (next == null) return;
+    e.preventDefault();
+    setTab(tabs[next].id);
+    document.getElementById(`tab-${tabs[next].id}`)?.focus();
+  }
+
   return (
     <main>
       <div className="appshell">
@@ -213,9 +225,11 @@ export default function Room() {
             </div>
           </div>
           <nav className="sb-nav" aria-label="sections">
+            <span className="k sb-navlabel">sections</span>
             <a href="#overview" className="on">overview</a>
             <a href="#ledger">ledger</a>
             <a href="#memory">memory</a>
+            <span className="k sb-navlabel">pages</span>
             <a href="/proof">proof checker</a>
             <a href="/">landing</a>
           </nav>
@@ -224,7 +238,7 @@ export default function Room() {
               {wipeArmed ? "Confirm: wipe" : "Wipe ledger"}
             </button>
             {wipeArmed && (
-              <span className="sb-status">forgets {vendors.length} vendors · {ledgerTotal} entries</span>
+              <span className="sb-status" aria-live="polite">forgets {vendors.length} vendors · {ledgerTotal} entries</span>
             )}
             <span className="sb-status">coordination via sibyl memory</span>
           </div>
@@ -412,9 +426,12 @@ export default function Room() {
                 <>
                   <div className="tabs" role="tablist" aria-label="memory tiers">
                     <span className="tab-pill" style={{ transform: `translateX(${activeIdx * 100}%)` }} aria-hidden="true" />
-                    {tabs.map((t) => (
+                    {tabs.map((t, i) => (
                       <button key={t.id} role="tab" aria-selected={tab === t.id}
-                              className={`tab ${tab === t.id ? "on" : ""}`} onClick={() => setTab(t.id)}>
+                              id={`tab-${t.id}`} tabIndex={tab === t.id ? 0 : -1}
+                              className={`tab ${tab === t.id ? "on" : ""}`}
+                              onKeyDown={(e) => onTabKey(e, i)}
+                              onClick={() => setTab(t.id)}>
                         {t.label} <span className="num">{String(t.count)}</span>
                       </button>
                     ))}
