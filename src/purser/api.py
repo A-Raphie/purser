@@ -89,6 +89,36 @@ def state() -> dict[str, Any]:
     tiers["daily_cap_micro"] = mem.load_policy().daily_cap_micro
     tiers["refusals_total"] = refusals_total
 
+    # Decision history straight from the COLD journal (payments + refusals),
+    # shaped like the panel's live decision cards. The feed survives reload
+    # and entry ids stay reachable — the proof flow is keyed on them.
+    ledger_total = sum(1 for ev in events
+                       if (ev.get("extra") or {}).get("kind") in ("payment", "refusal"))
+    recent: list[dict[str, Any]] = []
+    seq = ledger_total
+    for ev in events:
+        extra = ev.get("extra") or {}
+        if extra.get("kind") not in ("payment", "refusal"):
+            continue
+        recent.append({
+            "ledger_id": ev.get("id"),
+            "seq": seq,
+            "decision": {"approve": extra.get("kind") == "payment",
+                         "rule": extra.get("rule", "ok"),
+                         "reason": extra.get("reason", ""),
+                         "recalled": extra.get("recalled") or []},
+            "payment": {"status": extra.get("status", ""), "tx": extra.get("tx", ""),
+                        "detail": ""},
+            "request": {"vendor": extra.get("vendor", "?"), "sku": extra.get("sku", ""),
+                        "amount_micro": extra.get("amount_micro", 0)},
+            "pay_mode": "simulate" if extra.get("status") == "simulated" else "real",
+        })
+        seq -= 1
+        if len(recent) >= 8:
+            break
+    tiers["recent_decisions"] = recent
+    tiers["ledger_total"] = ledger_total
+
     session = mem.get_session()
     if session:
         tiers["hot"]["session"] = session

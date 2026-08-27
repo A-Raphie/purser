@@ -4,23 +4,22 @@ export function Sparkline({
   if (points.length === 0) {
     return <svg width={width} height={height} className={className} aria-hidden="true" />;
   }
-  const max = Math.max(...points, 1);
-  const step = points.length > 1 ? width / (points.length - 1) : 0;
+  // a single point renders as a flat line: cumulative spend with one day on
+  // record is flat, and a lone dot reads as a rendering bug
+  const pts = points.length === 1 ? [points[0], points[0]] : points;
+  const max = Math.max(...pts, 1);
+  const step = width / (pts.length - 1);
   const y = (v: number) => height - 4 - (v / max) * (height - 8);
-  const coords = points.map((v, i) =>
-    `${points.length > 1 ? i * step : width / 2},${y(v)}`);
+  const coords = pts.map((v, i) => `${i * step},${y(v)}`);
   const line = `M ${coords.join(" L ")}`;
-  const area = `${line} L ${points.length > 1 ? width : width / 2},${height} L ${points.length > 1 ? 0 : width / 2},${height} Z`;
+  const area = `${line} L ${width},${height} L 0,${height} Z`;
   return (
     <svg width={width} height={height} className={className} aria-hidden="true"
          viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none">
       <path d={area} fill="var(--live-soft)" />
       <path d={line} fill="none" stroke="var(--live)" strokeWidth="1.5"
             strokeLinejoin="round" strokeLinecap="round" />
-      {points.length > 0 && (
-        <circle cx={points.length > 1 ? width : width / 2} cy={y(points[points.length - 1])}
-                r="2.5" fill="var(--live)" />
-      )}
+      <circle cx={width} cy={y(pts[pts.length - 1])} r="2.5" fill="var(--live)" />
     </svg>
   );
 }

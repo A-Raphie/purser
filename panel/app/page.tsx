@@ -48,7 +48,7 @@ export default function Landing() {
       const series = (s.tiers.spend_series ?? []).map((x: { cumulative_micro: number }) => x.cumulative_micro);
       setLive({
         payments: payments.length,
-        refusals: Math.max(0, s.tiers.cold_count - payments.length),
+        refusals: s.tiers.refusals_total ?? Math.max(0, s.tiers.cold_count - payments.length),
         spent_micro: payments.reduce((a: number, p: { amount_micro?: number }) => a + (p.amount_micro ?? 0), 0),
         vendors: (s.tiers.warm.vendors ?? []).length,
         last_tx: rec[0]?.tx?.slice(0, 12) ?? "pending",
@@ -83,7 +83,7 @@ export default function Landing() {
   return (
     <main>
       <header className="topbar">
-        <span className="brand">purser<span className="brass">.</span></span>
+        <span className="brand">purser<span className="mark">.</span></span>
         <span className="topnav">
           <a href="#problem">problem</a>
           <a href="#how">how</a>
@@ -98,7 +98,7 @@ export default function Landing() {
             <span className="badge">SIBYL HACKATHON 2026 · MEMORY IS LOAD-BEARING</span>
             <h1 className="valueprop">
               Agents with wallets forget everything.<br />
-              <span className="brass">The treasurer shouldn&apos;t.</span>
+              <span className="mark">The treasurer shouldn&apos;t.</span>
             </h1>
             <p className="herosub">
               Purser keeps every vendor, budget rule, and purchase in persistent
@@ -133,7 +133,7 @@ export default function Landing() {
                   <span className="chip ok">{live.payments} payments settled</span>
                 </div>
                 <div className="stat-row">
-                  <div className="stat"><span className="k">duplicates paid</span><span className="v"><Tick value="0" /></span></div>
+                  <div className="stat"><span className="k">requests refused</span><span className="v"><Tick value={String(live?.refusals ?? 0)} /></span></div>
                   <div className="stat"><span className="k">vendors known</span><span className="v"><Tick value={String(live.vendors)} /></span></div>
                   <div className="stat"><span className="k">last tx</span><span className="v small"><Tick value={`${live.last_tx}…`} /></span></div>
                 </div>
@@ -241,7 +241,7 @@ REFUSED [dedup]
       </section>
 
       <footer className="foot">
-        <span className="brand">purser<span className="brass">.</span></span>
+        <span className="brand">purser<span className="mark">.</span></span>
         <span className="credit mono">
           solo build · team Raphie leveling ·
           <a href="https://github.com/A-Raphie/purser"> github.com/A-Raphie/purser</a> · MIT

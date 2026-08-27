@@ -92,5 +92,12 @@ Before every UI commit, run — against the RENDERED build, not the code alone:
 avoid-list + anatomy conformance (sidebar OR topbar, never both); (3)
 duplicate-action sweep (any action/text rendered twice on a page);
 (4) system conformance (type scale, radius, one label/empty/brand rule);
-(5) dead-class + link sweep; (6) three-page screenshot gate. A change is not
+(5) dead-class + link sweep; (6) three-page screenshot gate;
+(7) `impeccable` critique — dual-agent (design review + detect.mjs), Nielsen
+/40 persisted to .impeccable/critique/ with trend. A change is not
 done until the battery passes clean. Checklists are gates, not reading.
+
+Baseline 20/40 → 38/40 (Excellent) on Aug 27 after the empty-state +
+journal-hydration pass. Lessons that generalize: audit every STATE of a
+screen (empty/post-wipe/offline), not just the populated view; ids the UI
+is keyed on must be visible and copyable where they're used.

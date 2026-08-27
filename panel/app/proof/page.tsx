@@ -16,6 +16,17 @@ function ProofBody() {
   const id = params.get("id") ?? "";
   const [proof, setProof] = useState<Proof | null>(null);
   const [state, setState] = useState<"loading" | "error" | "done">("loading");
+  const [example, setExample] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (id) return;
+    fetch("/api/state").then((r) => r.json())
+      .then((s) => {
+        const first = s?.tiers?.recent_decisions?.[0];
+        if (first?.ledger_id) setExample(first.ledger_id);
+      })
+      .catch(() => {});
+  }, [id]);
 
   const load = useCallback(async () => {
     if (!id) { setState("done"); setProof(null); return; }
@@ -45,8 +56,14 @@ function ProofBody() {
         {!id && (
           <div className="empty-state">
             <p className="mono">no entry id given</p>
-            <p>Get one from a decision card in the ledger room, or paste an id:</p>
-            <p className="mono dim">/proof?id=&lt;ledger-entry-id&gt;</p>
+            <p>Every payment and refusal is a public entry. Paste an id, or take one from a decision card in the ledger room:</p>
+            <form className="checkrow" action="/proof" method="get">
+              <input name="id" placeholder="ledger entry id" aria-label="ledger entry id" />
+              <button type="submit">Verify</button>
+            </form>
+            {example && (
+              <p className="cite">or verify the latest entry: <a className="mono" href={`/proof?id=${example}`}>{example.slice(0, 18)}…</a></p>
+            )}
           </div>
         )}
         {id && state === "loading" && <div className="skeleton tall" aria-label="loading proof" />}
@@ -59,7 +76,7 @@ function ProofBody() {
         {id && state === "done" && proof?.error && (
           <div className="empty-state">
             <p className="mono">{proof.error}</p>
-            <a href="/">back to landing</a>
+            <a href="/room">back to the ledger room ›</a>
           </div>
         )}
         {id && state === "done" && proof?.id && (
