@@ -83,7 +83,6 @@ export default function Room() {
       return;
     }
     setBusy(true);
-    // optimistic pending card: the spinner morphs to a check on settlement
     setFeed((f) => [{
       pending: true,
       ledger_id: null,
@@ -101,7 +100,6 @@ export default function Room() {
           amount_micro: micro, pay_mode: mode,
         }),
       }).then((r) => r.json());
-      // only one request can be in flight (busy gate): replace the pending card
       setFeed((f) => f.map((d) => (d.pending ? res : d)));
       if (res.decision.approve) {
         toast("ok", `paid ${res.request.vendor} ${usd(res.request.amount_micro)}`);
@@ -132,7 +130,6 @@ export default function Room() {
   const vendors = state?.tiers.warm.vendors ?? [];
   const purchases = state?.tiers.warm.purchases ?? [];
   const receipts = wallet?.receipts ?? [];
-  const refusals = feed.filter((d) => !d.pending && !d.decision.approve).length;
   const heroSpent = purchases.reduce((a, p) => a + (p.amount_micro ?? 0), 0);
   const lastTx = receipts[0]?.tx?.slice(0, 10) ?? "none yet";
   const series = (state?.tiers.spend_series ?? []).map((s) => s.cumulative_micro);
@@ -144,286 +141,292 @@ export default function Room() {
   const tabs: { id: Tab; label: string; count: number }[] = [
     { id: "vendors", label: "vendors", count: vendors.length },
     { id: "journal", label: "journal", count: state?.tiers.cold_count ?? 0 },
-    { id: "hot", label: "hot", count: Object.keys(state?.tiers.hot ?? {}).length },
+    { id: "hot", label: "hot", count: Object.keys(hot).length },
   ];
   const activeIdx = tabs.findIndex((t) => t.id === tab);
 
   return (
     <main>
-      <header className="masthead">
-        <div>
-          <h1>purser<span>.</span></h1>
-          <div className="sub">a treasurer that never forgets a payment</div>
-        </div>        <div className="mast-facts">
-          <div className="fact">
-            <span className="k">wallet</span>
-            <span className="v">{wallet?.wallet ? `${wallet.wallet.slice(0, 8)}…${wallet.wallet.slice(-6)}` : "not set"}</span>
-          </div>
-          <div className="fact">
-            <span className="k">usdc on base</span>
-            <span className="v brass num">{wallet?.usdc != null ? wallet.usdc.toFixed(6) : "…"}</span>
-          </div>
-          <div className="fact">
-            <span className="k">memory</span>
-            <span className="v">sibyl · 5 tiers</span>
-          </div>
-          <a className="ghostlink" href="/">landing</a>
-        </div>
+      <header className="topbar">
+        <span className="brand">purser<span className="brass">.</span></span>
+        <span className="topnav">
+          <a href="/">landing</a>
+          <a href="/proof">proof</a>
+          <span className="sb-status"><span className="dot" aria-hidden="true" /> live</span>
+        </span>
       </header>
 
-      <div className="status-strip" role="status">
-        <span className="dot" aria-hidden="true" /> LIVE · LEDGER · SIBYL MEMORY · BASE 8453 · LAST TX <span className="num">{lastTx}…</span>
-      </div>
-
-      <div className="shell">
-      <section className="bridge" aria-label="the bridge: totals, spend curve, budget">
-        <div className="bridge-hero">
-          <span className="k">spent on record</span>
-          <span className="hero-num num">{usd(heroSpent)}</span>
-          <span className="chips">
-            <span className="chip ok">{purchases.length} payments</span>
-            <span className="chip ok">0 duplicates</span>
-            <span className="chip">{String(state?.tiers.refusals_total ?? 0)} refusals all-time</span>
-          </span>
-        </div>
-        <div className="bridge-spark">
-          <span className="k">spend curve · cumulative</span>
-          <Sparkline points={series} width={220} height={52} />
-          <span className="spark-note mono dim">
-            {series.length > 0
-              ? `${series.length} day${series.length > 1 ? "s" : ""} · ${usd(series[series.length - 1])} total`
-              : "no payments yet"}
-          </span>
-        </div>
-        <div className="bridge-budget">
-          <span className="k">today vs daily cap</span>
-          <div className="budget-bar" role="progressbar"
-               aria-valuenow={Math.round(budgetPct)} aria-valuemin={0} aria-valuemax={100}>
-            <div className={`budget-fill ${budgetPct > 80 ? "over" : ""}`}
-                 style={{ width: `${Math.max(2, budgetPct)}%` }} />
-          </div>
-          <span className="spark-note mono num">
-            {usd(spentToday)} / {usd(dailyCap)} · {Math.round(budgetPct)}%
-          </span>
-        </div>
-      </section>
-
-      <section className="crew-strip" aria-label="crew coordination">
-        {(["scout", "purser", "auditor"] as const).map((role, i) => {
-          const s = hot[`session_${role}`];
-          return (
-            <div key={role} className="crew-card">
-              {i > 0 && <span className="crew-arrow" aria-hidden="true">→</span>}
-              <span className={`dot sm ${s ? "" : "dead"}`} aria-hidden="true" />
-              <span className="crew-role">{role}</span>
-              <span className="crew-meta mono dim">
-                {s ? `shift ${String(s.shift ?? "?")} · active` : "idle"}
-              </span>
+      <div className="appshell">
+        <aside className="sidebar">
+          <div>
+            <div className="sb-brand">purser<span>.</span></div>
+            <div className="sb-status" style={{ marginTop: 6 }}>
+              <span className="dot" aria-hidden="true" /> live · base 8453
             </div>
-          );
-        })}
-        {hot.audit && (
-          <div className="crew-card audit">
-            <span className="crew-role">audit</span>
-            <span className={`crew-meta mono ${hot.audit.clean ? "oklive" : "retired"}`}>
-              {hot.audit.clean
-                ? `${String(hot.audit.checked ?? 0)} checked · clean`
-                : "drift flagged"}
-            </span>
           </div>
-        )}
-      </section>
+          <div className="sb-facts">
+            <div className="sb-fact">
+              <span className="k">wallet</span>
+              <span className="v">{wallet?.wallet ? `${wallet.wallet.slice(0, 8)}…${wallet.wallet.slice(-6)}` : "not set"}</span>
+            </div>
+            <div className="sb-fact">
+              <span className="k">usdc on base</span>
+              <span className="v green num">{wallet?.usdc != null ? wallet.usdc.toFixed(6) : "…"}</span>
+            </div>
+            <div className="sb-fact">
+              <span className="k">memory</span>
+              <span className="v">sibyl · 5 tiers</span>
+            </div>
+          </div>
+          <nav className="sb-nav" aria-label="sections">
+            <a href="#overview" className="on">overview</a>
+            <a href="#ledger">ledger</a>
+            <a href="#memory">memory</a>
+            <a href="/proof">proof checker</a>
+          </nav>
+          <div className="sb-bottom">
+            <button className="danger" onClick={wipe}>
+              {wipeArmed ? "Confirm: wipe" : "Wipe ledger"}
+            </button>
+            <span className="sb-status">coordination via sibyl memory</span>
+          </div>
+        </aside>
 
-      <section className="cmdbar" aria-label="request">
-        <div className="cmd-field">
-          <label htmlFor="vendor">vendor</label>
-          <input id="vendor" value={vendor} onChange={(e) => setVendor(e.target.value)} />
-        </div>
-        <div className="cmd-field">
-          <label htmlFor="sku">sku</label>
-          <input id="sku" value={sku} onChange={(e) => setSku(e.target.value)} />
-        </div>
-        <div className="cmd-field cmd-amount">
-          <label htmlFor="amount">amount (usdc)</label>
-          <input id="amount" value={amount} onChange={(e) => setAmount(e.target.value)} inputMode="decimal" />
-        </div>
-        <div className="cmd-field">
-          <label htmlFor="mode">pay mode</label>
-          <select id="mode" value={mode} onChange={(e) => setMode(e.target.value)}>
-            <option value="simulate">simulate (free)</option>
-            <option value="real">real x402 on base</option>
-          </select>
-        </div>
-        <button className="cmd-run" onClick={runRequest} disabled={busy}>
-          {busy ? "running…" : "Run request"}
-        </button>
-        <button className="danger cmd-wipe" onClick={wipe}>
-          {wipeArmed ? "Confirm: wipe" : "Wipe ledger"}
-        </button>
-      </section>
-      <p className="cmd-note">
-        Run the same request twice: the second must be refused by the ledger.
-        Wipe it and the amnesia twin pays again.
-      </p>
+        <div className="main">
+          <div className="status-strip" role="status">
+            <span className="dot" aria-hidden="true" /> LIVE · LEDGER · SIBYL MEMORY · BASE 8453 · LAST TX <span className="num">{lastTx}…</span>
+          </div>
 
-      <div className="main-rail">
-        <section className="zone main">
-          <h2>Decisions</h2>
-          {feed.length === 0 && (
-            <p className="empty">No decisions yet this viewing. Run a request.</p>
-          )}
-          {feed.map((d, i) => (
-            <article key={i} className={`card ${d.pending ? "pending" : d.decision.approve ? "approve" : "refuse"}`}>
-              <div className="head">
-                <span className="verdict">
-                  {d.pending
-                    ? (<><span className="spinner" aria-label="paying" /> PAYING…</>)
-                    : d.decision.approve
-                      ? (<><span className="check" aria-hidden="true" /> PAID · {d.payment.status.toUpperCase()}</>)
-                      : "REFUSED"}
-                </span>
-                {!d.pending && <span className="rule">{d.decision.rule}</span>}
+          <section className="cmdbar" aria-label="request">
+            <div className="cmd-field">
+              <label htmlFor="vendor">vendor</label>
+              <input id="vendor" value={vendor} onChange={(e) => setVendor(e.target.value)} />
+            </div>
+            <div className="cmd-field">
+              <label htmlFor="sku">sku</label>
+              <input id="sku" value={sku} onChange={(e) => setSku(e.target.value)} />
+            </div>
+            <div className="cmd-field cmd-amount">
+              <label htmlFor="amount">amount (usdc)</label>
+              <input id="amount" value={amount} onChange={(e) => setAmount(e.target.value)} inputMode="decimal" />
+            </div>
+            <div className="cmd-field">
+              <label htmlFor="mode">pay mode</label>
+              <select id="mode" value={mode} onChange={(e) => setMode(e.target.value)}>
+                <option value="simulate">simulate (free)</option>
+                <option value="real">real x402 on base</option>
+              </select>
+            </div>
+            <button className="cmd-run" onClick={runRequest} disabled={busy}>
+              {busy ? "running…" : "Run request"}
+            </button>
+          </section>
+          <p className="cmd-note">
+            Run the same request twice: the second must be refused by the ledger.
+            Wipe it and the amnesia twin pays again.
+          </p>
+
+          <div className="cardgrid">
+            <section className="gcard span5" id="overview" aria-label="spent on record">
+              <span className="k">spent on record</span>
+              <span className="hero-num num">{usd(heroSpent)}</span>
+              <Sparkline points={series} width={260} height={46} />
+              <span className="chips">
+                <span className="chip ok">{purchases.length} payments</span>
+                <span className="chip ok">0 duplicates</span>
+                <span className="chip">{String(state?.tiers.refusals_total ?? 0)} refusals</span>
+              </span>
+            </section>
+
+            <section className="gcard span4" aria-label="daily budget">
+              <span className="k">today vs daily cap</span>
+              <span className="hero-num num dim-num">{Math.round(budgetPct)}%</span>
+              <div className="budget-bar" role="progressbar"
+                   aria-valuenow={Math.round(budgetPct)} aria-valuemin={0} aria-valuemax={100}>
+                <div className={`budget-fill ${budgetPct > 80 ? "over" : ""}`}
+                     style={{ width: `${Math.max(2, budgetPct)}%` }} />
               </div>
-              <div className="body">
-                <div className="reason">
-                  {d.request.vendor}:{d.request.sku} · <span className="num">{usd(d.request.amount_micro)}</span>
-                  {d.pending ? " — recalling memory…" : ` — ${d.decision.reason}`}
-                </div>
-                {!d.pending && !d.decision.approve && d.decision.recalled.length > 0 && (
-                  <div className="ctx">
-                    <div className="ctx-head">recalled from memory</div>
-                    {d.decision.recalled.map((r, j) => (
-                      <div className="ctx-chunk" key={j}>
-                        <span className={`ctx-src ${/journal|event/i.test(r) ? "src-cold" : "src-warm"}`}>
-                          {/journal|event/i.test(r) ? "COLD · journal" : "WARM · entity"}
-                        </span>
-                        <span className="ctx-body mono">{r}</span>
-                      </div>
-                    ))}
+              <span className="spark-note mono num">
+                {usd(spentToday)} / {usd(dailyCap)}
+              </span>
+            </section>
+
+            <section className="gcard span3" aria-label="crew">
+              <span className="k">crew</span>
+              {(["scout", "purser", "auditor"] as const).map((role) => {
+                const s = hot[`session_${role}`];
+                return (
+                  <div key={role} className="rowline">
+                    <span className="n">
+                      <span className={`dot sm ${s ? "" : "dead"}`} aria-hidden="true" /> {role}
+                    </span>
+                    <span className="d">{s ? `shift ${String(s.shift ?? "?")}` : "idle"}</span>
                   </div>
-                )}
-                {!d.pending && (
-                  <div className="meta">
-                    <span className="tchip">x402</span>
-                    <span className="tchip">{d.decision.approve ? "memory·ok" : `memory·${d.decision.rule}`}</span>
-                    {d.pay_mode === "simulate" && <span className="sim-chip">simulated</span>}
-                    {d.ledger_id && (
-                      <a className="tx num" href={`/proof?id=${d.ledger_id}`}>
-                        {d.decision.approve ? `tx ${d.payment.tx.slice(0, 20)}…` : "public proof"} ›
-                      </a>
+                );
+              })}
+              {hot.audit && (
+                <div className="rowline">
+                  <span className="n">audit</span>
+                  <span className={`d ${hot.audit.clean ? "" : "retired"}`}>
+                    {hot.audit.clean ? `clean · ${String(hot.audit.checked ?? 0)}✓` : "drift"}
+                  </span>
+                </div>
+              )}
+            </section>
+
+            <section className="gcard span7" id="ledger" aria-label="decisions">
+              <span className="k">decisions</span>
+              {feed.length === 0 && (
+                <p className="empty">No decisions yet this viewing. Run a request above.</p>
+              )}
+              {feed.map((d, i) => (
+                <article key={i} className={`card ${d.pending ? "pending" : d.decision.approve ? "approve" : "refuse"}`}>
+                  <div className="head">
+                    <span className="verdict">
+                      {d.pending
+                        ? (<><span className="spinner" aria-label="paying" /> PAYING…</>)
+                        : d.decision.approve
+                          ? (<><span className="check" aria-hidden="true" /> PAID · {d.payment.status.toUpperCase()}</>)
+                          : "REFUSED"}
+                    </span>
+                    {!d.pending && <span className="rule">{d.decision.rule}</span>}
+                  </div>
+                  <div className="body">
+                    <div className="reason">
+                      {d.request.vendor}:{d.request.sku} · <span className="num">{usd(d.request.amount_micro)}</span>
+                      {d.pending ? " — recalling memory…" : ` — ${d.decision.reason}`}
+                    </div>
+                    {!d.pending && !d.decision.approve && d.decision.recalled.length > 0 && (
+                      <div className="ctx">
+                        <div className="ctx-head">recalled from memory</div>
+                        {d.decision.recalled.map((r, j) => (
+                          <div className="ctx-chunk" key={j}>
+                            <span className={`ctx-src ${/journal|event/i.test(r) ? "src-cold" : "src-warm"}`}>
+                              {/journal|event/i.test(r) ? "COLD · journal" : "WARM · entity"}
+                            </span>
+                            <span className="ctx-body mono">{r}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {!d.pending && (
+                      <div className="meta">
+                        <span className="tchip">x402</span>
+                        <span className="tchip">{d.decision.approve ? "memory·ok" : `memory·${d.decision.rule}`}</span>
+                        {d.pay_mode === "simulate" && <span className="sim-chip">simulated</span>}
+                        {d.ledger_id && (
+                          <a className="tx num" href={`/proof?id=${d.ledger_id}`}>
+                            {d.decision.approve ? `tx ${d.payment.tx.slice(0, 20)}…` : "public proof"} ›
+                          </a>
+                        )}
+                      </div>
                     )}
                   </div>
-                )}
-              </div>
-            </article>
-          ))}
-        </section>
+                </article>
+              ))}
+            </section>
 
-        <section className="zone rail">
-          <h2>Memory tiers</h2>
-          {loadErr && (
-            <div className="rowline">
-              <span className="n">ledger unreachable</span>
-              <button className="linklike" onClick={refresh}>Retry</button>
-            </div>
-          )}
-          {!loadErr && !state && <div className="skeleton tall" aria-label="loading tiers" />}
-          {state && (
-            <>
-              <div className="tabs" role="tablist" aria-label="memory tiers">
-                <span className="tab-pill" style={{ transform: `translateX(${activeIdx * 100}%)` }} aria-hidden="true" />
-                {tabs.map((t) => (
-                  <button key={t.id} role="tab" aria-selected={tab === t.id}
-                          className={`tab ${tab === t.id ? "on" : ""}`} onClick={() => setTab(t.id)}>
-                    {t.label} <span className="num">{String(t.count)}</span>
-                  </button>
-                ))}
-              </div>
-
-              {tab === "vendors" && (
-                <div className="tier">
-                  {vendors.length === 0 && <p className="empty">empty ledger. Run a request.</p>}
-                  {vendors.map((v) => (
-                    <div key={v.name} className="vendor-row">
-                      <div className="rowline">
-                        <span className={`n ${v.status === "retired" ? "retired" : ""}`}>
-                          <span className={`dot sm ${v.status === "retired" ? "dead" : ""}`} aria-hidden="true" /> {v.name}
-                        </span>
-                        <span className="d">
-                          {v.status === "retired" ? "retired" : `${v.purchases ?? 0} buys`}
-                        </span>
-                      </div>
-                      <div className="trustbar" role="img"
-                           aria-label={`trust ${(v.trust ?? 0).toFixed(2)} of 1`}>
-                        <div className={`trustfill ${v.status === "retired" ? "dead" : ""}`}
-                             style={{ width: `${Math.round((v.trust ?? 0) * 100)}%` }} />
-                      </div>
-                    </div>
-                  ))}
+            <section className="gcard span5" id="memory" aria-label="memory tiers">
+              <span className="k">memory tiers</span>
+              {loadErr && (
+                <div className="rowline">
+                  <span className="n">ledger unreachable</span>
+                  <button className="linklike" onClick={refresh}>Retry</button>
                 </div>
               )}
+              {!loadErr && !state && <div className="skeleton tall" aria-label="loading tiers" />}
+              {state && (
+                <>
+                  <div className="tabs" role="tablist" aria-label="memory tiers">
+                    <span className="tab-pill" style={{ transform: `translateX(${activeIdx * 100}%)` }} aria-hidden="true" />
+                    {tabs.map((t) => (
+                      <button key={t.id} role="tab" aria-selected={tab === t.id}
+                              className={`tab ${tab === t.id ? "on" : ""}`} onClick={() => setTab(t.id)}>
+                        {t.label} <span className="num">{String(t.count)}</span>
+                      </button>
+                    ))}
+                  </div>
 
-              {tab === "journal" && (
-                <div className="tier">
-                  <div className="rowline"><span className="n">append-only events</span><span className="d num">{String(purchases.length)} payments</span></div>
-                  {purchases.slice(0, 8).map((p, j) => (
-                    <div key={j} className="rowline">
-                      <span className="n">{p.vendor ?? "?"}</span>
-                      <span className="d num">{p.date ?? ""} · {usd(p.amount_micro ?? 0)}</span>
+                  {tab === "vendors" && (
+                    <div className="tier">
+                      {vendors.length === 0 && <p className="empty">empty ledger. Run a request.</p>}
+                      {vendors.map((v) => (
+                        <div key={v.name} className="vendor-row">
+                          <div className="rowline">
+                            <span className={`n ${v.status === "retired" ? "retired" : ""}`}>
+                              <span className={`dot sm ${v.status === "retired" ? "dead" : ""}`} aria-hidden="true" /> {v.name}
+                            </span>
+                            <span className="d">
+                              {v.status === "retired" ? "retired" : `${v.purchases ?? 0} buys`}
+                            </span>
+                          </div>
+                          <div className="trustbar" role="img"
+                               aria-label={`trust ${(v.trust ?? 0).toFixed(2)} of 1`}>
+                            <div className={`trustfill ${v.status === "retired" ? "dead" : ""}`}
+                                 style={{ width: `${Math.round((v.trust ?? 0) * 100)}%` }} />
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-              )}
+                  )}
 
-              {tab === "hot" && (
-                <div className="tier">
-                  {(["scout", "purser", "auditor"] as const).map((role) => {
-                    const s = state.tiers.hot?.[`session_${role}`] as { shift?: number } | undefined;
-                    return s ? (
-                      <div key={role} className="rowline">
-                        <span className="n"><span className="dot sm" aria-hidden="true" /> {role}</span>
-                        <span className="d">shift {String(s.shift ?? "?")} · active</span>
-                      </div>
-                    ) : null;
-                  })}
-                  {!state.tiers.hot?.session_scout && !state.tiers.hot?.session && (
-                    <p className="empty">no session state yet. Run a request or a crew shift.</p>
-                  )}
-                  {state.tiers.hot?.handoff_to_auditor && (
-                    <div className="rowline">
-                      <span className="n">handoff → auditor</span>
-                      <span className="d">queued</span>
+                  {tab === "journal" && (
+                    <div className="tier">
+                      <div className="rowline"><span className="n">append-only events</span><span className="d num">{String(purchases.length)} payments</span></div>
+                      {purchases.slice(0, 8).map((p, j) => (
+                        <div key={j} className="rowline">
+                          <span className="n">{p.vendor ?? "?"}</span>
+                          <span className="d num">{p.date ?? ""} · {usd(p.amount_micro ?? 0)}</span>
+                        </div>
+                      ))}
                     </div>
                   )}
-                  {state.tiers.hot?.audit && (
-                    <div className="rowline">
-                      <span className="n">audit · shift {String((state.tiers.hot.audit as { shift?: number }).shift ?? "?")}</span>
-                      <span className={`d ${(state.tiers.hot.audit as { clean?: boolean }).clean ? "" : "retired"}`}>
-                        {(state.tiers.hot.audit as { clean?: boolean }).clean
-                          ? `${String((state.tiers.hot.audit as { checked?: number }).checked ?? 0)} checked · clean`
-                          : "drift flagged"}
-                      </span>
+
+                  {tab === "hot" && (
+                    <div className="tier">
+                      {(["scout", "purser", "auditor"] as const).map((role) => {
+                        const s = hot[`session_${role}`];
+                        return s ? (
+                          <div key={role} className="rowline">
+                            <span className="n"><span className="dot sm" aria-hidden="true" /> {role}</span>
+                            <span className="d">shift {String(s.shift ?? "?")}</span>
+                          </div>
+                        ) : null;
+                      })}
+                      {!hot.session_scout && <p className="empty">no session state yet.</p>}
+                      {hot.handoff_to_auditor && (
+                        <div className="rowline">
+                          <span className="n">handoff → auditor</span>
+                          <span className="d">queued</span>
+                        </div>
+                      )}
+                      {hot.audit && (
+                        <div className="rowline">
+                          <span className="n">audit</span>
+                          <span className={`d ${hot.audit.clean ? "" : "retired"}`}>
+                            {hot.audit.clean ? `${String(hot.audit.checked ?? 0)} checked · clean` : "drift flagged"}
+                          </span>
+                        </div>
+                      )}
                     </div>
                   )}
-                </div>
+                </>
               )}
-            </>
-          )}
-        </section>
+            </section>
+          </div>
+
+          <footer className="receipts">
+            <h2>Receipts</h2>
+            {receipts.length === 0 && <span className="empty">no onchain receipts yet (sim runs are labeled, not receipted)</span>}
+            {receipts.map((r) => (
+              <span key={r.tx} className="receipt">
+                <a href={r.basescan} target="_blank" rel="noreferrer">{r.tx.slice(0, 14)}…</a>{" "}
+                <span className="who">{r.vendor} <span className="num">{usd(r.amount_micro)}</span></span>
+              </span>
+            ))}
+          </footer>
+        </div>
       </div>
-
-      <footer className="receipts">
-        <h2>Receipts</h2>
-        {receipts.length === 0 && <span className="empty">no onchain receipts yet (sim runs are labeled, not receipted)</span>}
-        {receipts.map((r) => (
-          <span key={r.tx} className="receipt">
-            <a href={r.basescan} target="_blank" rel="noreferrer">{r.tx.slice(0, 14)}…</a>{" "}
-            <span className="who">{r.vendor} <span className="num">{usd(r.amount_micro)}</span></span>
-          </span>
-        ))}
-      </footer>
-      </div>
-
 
       <div className="toasts" aria-live="polite">
         {toasts.map((t) => (
