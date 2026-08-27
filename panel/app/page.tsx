@@ -171,7 +171,7 @@ REFUSED [dedup]
               <tbody>
                 <tr><td>duplicates paid</td><td className="num hero-zero">0</td><td className="num bad">1</td></tr>
                 <tr><td>blacklisted vendors paid</td><td className="num hero-zero">0</td><td className="num bad">1</td></tr>
-                <tr><td>requests refused</td><td className="num">3</td><td className="num">1</td></tr>
+                <tr><td>requests refused</td><td className="num hero-zero">3</td><td className="num bad">1</td></tr>
               </tbody>
             </table>
             <p className="cite">live output of <span className="mono">eval/run_eval.py</span> · raw JSON committed in <span className="mono">eval/results/</span></p>
