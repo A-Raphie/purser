@@ -9,7 +9,7 @@ const sans = Geist({
 });
 const mono = IBM_Plex_Mono({
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  weight: ["400", "600"],
   variable: "--font-data-loaded",
 });
 
