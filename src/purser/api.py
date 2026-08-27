@@ -83,6 +83,8 @@ def state() -> dict[str, Any]:
     # bridge-band data: spend sparkline, budget bar, refusal count
     by_date: dict[str, int] = {}
     refusals_total = 0
+    acp_earned_micro = 0
+    acp_jobs = 0
     for ev in events:
         extra = ev.get("extra") or {}
         if extra.get("kind") == "payment" and extra.get("status") in ("settled", "simulated"):
@@ -90,6 +92,9 @@ def state() -> dict[str, Any]:
             by_date[day] = by_date.get(day, 0) + int(extra.get("amount_micro", 0))
         elif extra.get("kind") == "refusal":
             refusals_total += 1
+        elif extra.get("kind") == "earning":
+            acp_jobs += 1
+            acp_earned_micro += int(extra.get("amount_micro", 0))
     series, run = [], 0
     for day in sorted(by_date):
         run += by_date[day]
@@ -99,6 +104,8 @@ def state() -> dict[str, Any]:
     tiers["spent_today_micro"] = by_date.get(today, 0)
     tiers["daily_cap_micro"] = mem.load_policy().daily_cap_micro
     tiers["refusals_total"] = refusals_total
+    tiers["acp_earned_micro"] = acp_earned_micro
+    tiers["acp_jobs"] = acp_jobs
 
     # Decision history straight from the COLD journal (payments + refusals),
     # shaped like the panel's live decision cards. The feed survives reload
@@ -139,7 +146,7 @@ def state() -> dict[str, Any]:
     audit = mem._client.get_state("audit")
     if audit:
         tiers["hot"]["audit"] = audit.get("body", audit)
-    for role in ("scout", "purser", "auditor"):
+    for role in ("scout", "purser", "auditor", "acp"):
         s = mem._client.get_state(f"session:{role}")
         if s:
             tiers["hot"][f"session_{role}"] = s.get("body", s)

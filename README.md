@@ -66,7 +66,7 @@ run the same request twice in the panel and open its "public proof" link.
 | Trust updates from payment outcomes | 🟢 settled +0.05, failed −0.15, auto-retire below floor |
 | Crew (scout → purser → auditor through HOT handoffs) | 🟢 shipped, fresh process per role, `scripts/demo_crew.py` |
 | Auditor drift detection | 🟢 reconciles COLD journal vs WARM purchases, flags drift |
-| Virtuals ACP job | 🔴 Phase 3 |
+| Virtuals ACP job (spend-check service) | 🟡 code, tests + spike shipped; live earning pending agent registration |
 | Demo video + build-in-public posts | 🔴 Phase 4 |
 | Hash-anchored memory snapshots | 🔴 roadmap (provenance of memory) |
 
@@ -124,6 +124,16 @@ python scripts/demo_crew.py
 # optional: the control room (build once, then one process; Node fetches
 # the two fonts at build time, so build with network)
 cd panel && npm install && npm run build && cd ..
+
+# optional: the ACP leg (earn on Virtuals) — the SDK needs Python <3.13,
+# so it lives in its own venv; everything else runs without it
+python3.11 -m venv .venv-acp
+.venv-acp/bin/pip install -r requirements-acp.txt
+# then register two agents at https://app.virtuals.io/acp/join, fill the ACP
+# block in .env (see .env.example), and:
+#   .venv-acp/bin/python spikes/spike_c_acp.py                # rail proof
+#   .venv-acp/bin/python -m purser.acp_service --db runtime/panel_memory.db   # seller (from src/)
+#   .venv-acp/bin/python scripts/acp_client.py --vendor weather.x402.press --sku x --amount-micro 3750
 (cd src && python -m purser.api)       # http://localhost:8788
 # /       landing with live ledger readout + paste-an-id proof checker
 # /room   the control room (requests, decisions, tiers, wipe)
@@ -147,6 +157,7 @@ else in the codebase touches Sibyl. The interesting lines:
 | Daily cap sums the COLD journal | `src/purser/memory.py` → `spent_today_micro()` | `read_events` |
 | Every payment/decision journaled | `src/purser/decide.py` → `learn_from_outcome()` | `write_event`, `set_entity` |
 | Fresh-session recall proof | `scripts/demo_two_sessions.py` | runs two separate processes; session 2 refuses what session 1 bought |
+| ACP verdicts read the same world | `src/purser/acp_service.py` → `handle_job_phase()` | `decide()` reads dedup/caps/trust (read-only); the only write is the `earning` journal row + HOT `session:acp` |
 | With/without-memory numbers | `eval/run_eval.py` | both arms' raw JSON in `eval/results/` |
 
 ## Run the control room

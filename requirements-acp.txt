@@ -1,0 +1,6 @@
+# ACP leg only — NOT part of the main install.
+# virtuals-acp requires Python >=3.10,<3.13; the main venv is 3.14, so this
+# installs into its own venv:
+#   python3.11 -m venv .venv-acp && .venv-acp/bin/pip install -r requirements-acp.txt
+virtuals-acp==0.3.23
+python-dotenv

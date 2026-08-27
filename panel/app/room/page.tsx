@@ -22,6 +22,8 @@ type State = {
     spent_today_micro?: number;
     daily_cap_micro?: number;
     refusals_total?: number;
+    acp_earned_micro?: number;
+    acp_jobs?: number;
     recent_decisions?: Decision[];
     ledger_total?: number;
   };
@@ -168,7 +170,10 @@ export default function Room() {
   const spentToday = state?.tiers.spent_today_micro ?? 0;
   const dailyCap = state?.tiers.daily_cap_micro ?? 250_000;
   const budgetPct = Math.min(100, (spentToday / Math.max(1, dailyCap)) * 100);
-  const hot = (state?.tiers.hot ?? {}) as Record<string, { shift?: number; clean?: boolean; checked?: number } | undefined>;
+  const hot = (state?.tiers.hot ?? {}) as Record<
+    string,
+    { shift?: number; clean?: boolean; checked?: number; last_rule?: string; earned_micro?: number } | undefined
+  >;
   const ledgerTotal = state?.tiers.ledger_total ?? 0;
   const retired = vendors.filter((v) => v.status === "retired");
   const history = (state?.tiers.recent_decisions ?? []).filter(
@@ -317,6 +322,9 @@ export default function Room() {
                     {(state?.tiers.refusals_total ?? 0) > 0 && (
                       <span className="chip refuse">{String(state?.tiers.refusals_total)} refused</span>
                     )}
+                    {(state?.tiers.acp_jobs ?? 0) > 0 && (
+                      <span className="chip ok">+{usd(state?.tiers.acp_earned_micro ?? 0)} earned · {String(state?.tiers.acp_jobs)} acp</span>
+                    )}
                   </span>
                 </>
               )}
@@ -354,6 +362,12 @@ export default function Room() {
                   <span className={`d ${hot.audit.clean ? "" : "retired"}`}>
                     {hot.audit.clean ? `clean · ${String(hot.audit.checked ?? 0)}✓` : "drift"}
                   </span>
+                </div>
+              )}
+              {hot.session_acp && (
+                <div className="rowline">
+                  <span className="n"><span className="dot sm" aria-hidden="true" /> acp seller</span>
+                  <span className="d">{`last ${String(hot.session_acp.last_rule ?? "?")} · ${usd(hot.session_acp.earned_micro ?? 0)}`}</span>
                 </div>
               )}
             </section>
