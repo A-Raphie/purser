@@ -147,15 +147,6 @@ export default function Room() {
 
   return (
     <main>
-      <header className="topbar">
-        <span className="brand">purser<span className="brass">.</span></span>
-        <span className="topnav">
-          <a href="/">landing</a>
-          <a href="/proof">proof</a>
-          <span className="sb-status"><span className="dot" aria-hidden="true" /> live</span>
-        </span>
-      </header>
-
       <div className="appshell">
         <aside className="sidebar">
           <div>
@@ -183,6 +174,7 @@ export default function Room() {
             <a href="#ledger">ledger</a>
             <a href="#memory">memory</a>
             <a href="/proof">proof checker</a>
+            <a href="/">landing</a>
           </nav>
           <div className="sb-bottom">
             <button className="danger" onClick={wipe}>

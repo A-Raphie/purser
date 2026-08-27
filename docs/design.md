@@ -84,3 +84,13 @@ Any visual change ships with a three-page screenshot comparison (/, /room,
 The comparison is part of the commit message evidence. Known-accepted
 difference: the proof page's slimmer surface header (focused page, not an
 app surface).
+
+## Audit battery (standing rule, Aug 27)
+
+Before every UI commit, run — against the RENDERED build, not the code alone:
+(1) ui-craft pre-ship checklist incl. cross-screen consistency; (2) winsznx-ui
+avoid-list + anatomy conformance (sidebar OR topbar, never both); (3)
+duplicate-action sweep (any action/text rendered twice on a page);
+(4) system conformance (type scale, radius, one label/empty/brand rule);
+(5) dead-class + link sweep; (6) three-page screenshot gate. A change is not
+done until the battery passes clean. Checklists are gates, not reading.

@@ -88,7 +88,7 @@ export default function Landing() {
           <a href="#problem">problem</a>
           <a href="#how">how</a>
           <a href="#proof">proof</a>
-          <a className="roomcta" href="/room">open the ledger room ›</a>
+          <a href="/room">ledger room ›</a>
         </span>
       </header>
 
@@ -236,7 +236,7 @@ REFUSED [dedup]
       <section className="cta-sec">
         <div className="rise">
           <p className="cta-line">Watch a fresh session refuse what it already paid for.</p>
-          <a className="primary big" href="/room">Open the ledger room</a>
+          <a className="primary" href="/room">Open the ledger room</a>
         </div>
       </section>
 

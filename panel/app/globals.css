@@ -160,7 +160,6 @@ label { display: block; margin: 12px 0 4px; color: var(--muted); font-size: 10px
 .empty { color: var(--muted); font-style: italic; font-size: 13px; }
 .empty-state { border: 1px dashed var(--border-strong); border-radius: var(--r-card); background: var(--surface); padding: 26px; }
 .empty-state button { width: auto; margin-top: 12px; }
-.note { color: var(--muted); font-size: 12px; margin-top: 10px; }
 
 /* ============================================================================
    ROOM — sidebar app shell + dense card grid
@@ -177,11 +176,11 @@ label { display: block; margin: 12px 0 4px; color: var(--muted); font-size: 10px
 .topnav a { color: var(--muted); text-decoration: none; font-size: 13px; font-weight: 500; }
 .topnav a:hover { color: var(--fg); }
 
-.appshell { display: grid; grid-template-columns: 220px 1fr; min-height: calc(100vh - 52px); }
+.appshell { display: grid; grid-template-columns: 220px 1fr; min-height: 100vh; }
 .sidebar {
   background: var(--surface); border-right: 1px solid var(--border);
   padding: 20px 16px; display: flex; flex-direction: column; gap: 20px;
-  position: sticky; top: 52px; height: calc(100vh - 52px); overflow-y: auto;
+  position: sticky; top: 0; height: 100vh; overflow-y: auto;
 }
 .sb-brand { font-weight: 800; font-size: 18px; letter-spacing: -0.02em; }
 .sb-brand span { color: var(--accent); }
@@ -395,7 +394,6 @@ table.mini .bad { color: var(--bad); font-size: 22px; font-weight: 800; }
 
 .cta-sec { border-top: 1px solid var(--border-strong); text-align: center; padding: 72px 24px; background: var(--surface); }
 .cta-line { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 24px; }
-.cta-sec .primary.big { min-height: 52px; padding: 0 34px; font-size: 13px; }
 .foot { display: flex; justify-content: space-between; align-items: center; padding: 18px 24px; border-top: 1px solid var(--border); }
 .foot .brand { font-weight: 800; letter-spacing: -0.02em; font-size: 18px; }
 .foot .credit { color: var(--dim); font-family: var(--font-data); font-size: 10px; letter-spacing: 1px; }
