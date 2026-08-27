@@ -556,3 +556,11 @@ table.fields a { color: var(--accent); }
   .sb-bottom { margin-top: 0; flex-direction: row; }
   .span3, .span4, .span5, .span7 { grid-column: span 12; }
 }
+
+/* shared entry wash: every page's top zone gets the same amber atmosphere
+   (was landing-only; the room and proof pages drifted cold-flat) */
+.main, .proofcard {
+  background:
+    radial-gradient(600px 300px at 60% 0%, var(--accent-soft), transparent 70%);
+  background-repeat: no-repeat;
+}

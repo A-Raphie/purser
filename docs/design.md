@@ -76,3 +76,11 @@ chip, brass outline.
 Gradients (any), rounded corners (any), glow/shadow decoration, mascots,
 illustrations, pastels, fade-in-up, emoji icons, centered hero with stacked
 CTAs, three-column feature grids, purple/indigo anything.
+
+## Ship gate (added Aug 27, after the atmosphere drift)
+
+Any visual change ships with a three-page screenshot comparison (/, /room,
+/proof at the same viewport) — pages are verified *together*, never alone.
+The comparison is part of the commit message evidence. Known-accepted
+difference: the proof page's slimmer surface header (focused page, not an
+app surface).
