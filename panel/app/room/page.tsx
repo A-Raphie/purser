@@ -175,6 +175,7 @@ export default function Room() {
         <span className="dot" aria-hidden="true" /> LIVE · LEDGER · SIBYL MEMORY · BASE 8453 · LAST TX <span className="num">{lastTx}…</span>
       </div>
 
+      <div className="shell">
       <section className="bridge" aria-label="the bridge: totals, spend curve, budget">
         <div className="bridge-hero">
           <span className="k">spent on record</span>
@@ -233,33 +234,40 @@ export default function Room() {
         )}
       </section>
 
-      <div className="deck">
-        <section className="zone">
-          <h2>Request</h2>
+      <section className="cmdbar" aria-label="request">
+        <div className="cmd-field">
           <label htmlFor="vendor">vendor</label>
           <input id="vendor" value={vendor} onChange={(e) => setVendor(e.target.value)} />
+        </div>
+        <div className="cmd-field">
           <label htmlFor="sku">sku</label>
           <input id="sku" value={sku} onChange={(e) => setSku(e.target.value)} />
+        </div>
+        <div className="cmd-field cmd-amount">
           <label htmlFor="amount">amount (usdc)</label>
           <input id="amount" value={amount} onChange={(e) => setAmount(e.target.value)} inputMode="decimal" />
+        </div>
+        <div className="cmd-field">
           <label htmlFor="mode">pay mode</label>
           <select id="mode" value={mode} onChange={(e) => setMode(e.target.value)}>
             <option value="simulate">simulate (free)</option>
             <option value="real">real x402 on base</option>
           </select>
-          <button onClick={runRequest} disabled={busy}>
-            {busy ? "running…" : "Run request"}
-          </button>
-          <p className="note">
-            Run the same request twice. The second one must be refused by the
-            ledger. Wipe the ledger and the amnesia twin pays again.
-          </p>
-          <button className="danger" onClick={wipe}>
-            {wipeArmed ? "Confirm: wipe the ledger" : "Wipe ledger (demo amnesia)"}
-          </button>
-        </section>
+        </div>
+        <button className="cmd-run" onClick={runRequest} disabled={busy}>
+          {busy ? "running…" : "Run request"}
+        </button>
+        <button className="danger cmd-wipe" onClick={wipe}>
+          {wipeArmed ? "Confirm: wipe" : "Wipe ledger"}
+        </button>
+      </section>
+      <p className="cmd-note">
+        Run the same request twice: the second must be refused by the ledger.
+        Wipe it and the amnesia twin pays again.
+      </p>
 
-        <section className="zone">
+      <div className="main-rail">
+        <section className="zone main">
           <h2>Decisions</h2>
           {feed.length === 0 && (
             <p className="empty">No decisions yet this viewing. Run a request.</p>
@@ -311,7 +319,7 @@ export default function Room() {
           ))}
         </section>
 
-        <section className="zone">
+        <section className="zone rail">
           <h2>Memory tiers</h2>
           {loadErr && (
             <div className="rowline">
@@ -414,6 +422,8 @@ export default function Room() {
           </span>
         ))}
       </footer>
+      </div>
+
 
       <div className="toasts" aria-live="polite">
         {toasts.map((t) => (
