@@ -203,7 +203,7 @@ label { display: block; margin: 12px 0 4px; color: var(--muted); font-size: 10px
 }
 .sidebar .sb-status { margin-top: 6px; }
 .sb-facts { display: flex; flex-direction: column; gap: 12px; }
-.sb-fact .k { margin-bottom: 2px; }
+.sb-fact .k { display: block; margin-bottom: 3px; }
 .sb-fact .v { font-family: var(--font-data); font-size: 12px; }
 .sb-fact .v.green { color: var(--live); }
 .sb-nav { display: flex; flex-direction: column; gap: 4px; }
@@ -244,7 +244,7 @@ label { display: block; margin: 12px 0 4px; color: var(--muted); font-size: 10px
 .span5 { grid-column: span 5; min-height: 190px; }
 .span7 { grid-column: span 7; }
 .span12 { grid-column: span 12; }
-#ledger, #memory { min-height: 300px; }
+#ledger { min-height: 300px; }
 
 .hero-num {
   display: block; font-size: clamp(34px, 12vw, 56px); font-weight: 800; letter-spacing: -0.03em;
@@ -276,8 +276,9 @@ label { display: block; margin: 12px 0 4px; color: var(--muted); font-size: 10px
   position: relative; z-index: 1; background: none; border: none; color: var(--muted);
   min-height: 38px; padding: 0 8px; border-radius: 6px; cursor: pointer;
   font-family: var(--font-data); font-size: 10px; letter-spacing: 1px; text-transform: uppercase;
-  box-shadow: none;
+  box-shadow: none; white-space: nowrap;
 }
+.tab .num { margin-left: 5px; }
 .tab:hover { color: var(--fg); box-shadow: none; }
 .tab.on { color: var(--fg); }
 .tab-pill {

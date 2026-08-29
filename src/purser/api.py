@@ -117,6 +117,14 @@ def state() -> dict[str, Any]:
     tiers["refusals_total"] = refusals_total
     tiers["acp_earned_micro"] = acp_earned_micro
     tiers["acp_jobs"] = acp_jobs
+    tiers["recent_earnings"] = [
+        {"job_id": (ev.get("extra") or {}).get("job_id"),
+         "amount_micro": (ev.get("extra") or {}).get("amount_micro"),
+         "rule": (ev.get("extra") or {}).get("verdict_rule"),
+         "date": (ev.get("extra") or {}).get("date")}
+        for ev in events
+        if (ev.get("extra") or {}).get("kind") == "earning"
+    ][:6]
 
     # Decision history straight from the COLD journal (payments + refusals),
     # shaped like the panel's live decision cards. The feed survives reload
@@ -247,6 +255,7 @@ def wallet() -> dict[str, Any]:
 
     mem = _mem()
     receipts = []
+    last_tx = CANONICAL_RECEIPTS[-1]["tx"]   # newest canonical by default
     seen = set()
     for c in CANONICAL_RECEIPTS:
         seen.add(c["tx"])
@@ -257,14 +266,16 @@ def wallet() -> dict[str, Any]:
         tx = str(extra.get("tx", "")).strip().strip("'\"")
         if tx and not tx.startswith("0x"):
             tx = "0x" + tx
-        if extra.get("kind") == "payment" and _REAL_TX.match(tx) and tx not in seen:
-            seen.add(tx)
-            receipts.append({
-                "tx": tx, "vendor": extra.get("vendor"),
-                "amount_micro": extra.get("amount_micro"),
-                "status": extra.get("status"),
-                "basescan": f"https://basescan.org/tx/{tx}"})
-    return {"wallet": address, "usdc": usdc, "receipts": receipts}
+        if extra.get("kind") == "payment" and _REAL_TX.match(tx):
+            last_tx = tx   # live journal is newest-first: the first real tx wins
+            if tx not in seen:
+                seen.add(tx)
+                receipts.append({
+                    "tx": tx, "vendor": extra.get("vendor"),
+                    "amount_micro": extra.get("amount_micro"),
+                    "status": extra.get("status"),
+                    "basescan": f"https://basescan.org/tx/{tx}"})
+    return {"wallet": address, "usdc": usdc, "receipts": receipts, "last_tx": last_tx}
 
 
 # Serve the built panel if present (python -m purser.api => one process).

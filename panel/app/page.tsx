@@ -37,6 +37,7 @@ export default function Landing() {
   const [receipts, setReceipts] = useState<Receipt[]>([]);
   const [checkId, setCheckId] = useState("");
   const [checkResult, setCheckResult] = useState<{ ok: boolean; text: string } | null>(null);
+  const [latestEntryId, setLatestEntryId] = useState<string | null>(null);
   const [checking, setChecking] = useState(false);
 
   async function loadLive() {
@@ -51,10 +52,12 @@ export default function Landing() {
         refusals: s.tiers.refusals_total ?? Math.max(0, s.tiers.cold_count - payments.length),
         spent_micro: payments.reduce((a: number, p: { amount_micro?: number }) => a + (p.amount_micro ?? 0), 0),
         vendors: (s.tiers.warm.vendors ?? []).length,
-        last_tx: rec[0]?.tx?.slice(0, 12) ?? "pending",
+        last_tx: (w.last_tx ?? "").slice(0, 12) || "pending",
         series,
       });
       setReceipts(rec);
+      const firstId = (s.tiers.recent_decisions ?? [])[0]?.ledger_id;
+      setLatestEntryId(firstId ?? null);
       setErr(false);
     } catch {
       setErr(true);
@@ -134,9 +137,9 @@ export default function Landing() {
                   <span className="chip ok">{live.payments} payments settled</span>
                 </div>
                 <div className="stat-row">
-                  <div className="stat"><span className="k">requests refused</span><span className="v"><Tick value={String(live?.refusals ?? 0)} /></span></div>
-                  <div className="stat"><span className="k">vendors known</span><span className="v"><Tick value={String(live.vendors)} /></span></div>
-                  <div className="stat"><span className="k">last tx</span><span className="v small"><Tick value={`${live.last_tx}…`} /></span></div>
+                  <div className="stat"><span className="k">refused</span><span className="v small num"><Tick value={String(live?.refusals ?? 0)} /></span></div>
+                  <div className="stat"><span className="k">vendors</span><span className="v small num"><Tick value={String(live.vendors)} /></span></div>
+                  <div className="stat"><span className="k">last tx</span><span className="v small num">{live.last_tx}</span></div>
                 </div>
               </div>
             )}
@@ -208,13 +211,16 @@ REFUSED [dedup]
                 <label className="sr-only" htmlFor="pid">ledger entry id</label>
                 <input id="pid" value={checkId} onChange={(e) => setCheckId(e.target.value)}
                        onKeyDown={(e) => { if (e.key === "Enter") check(); }}
-                       placeholder="ledger entry id, e.g. 2db1f7df-07a7-…" />
+                       placeholder="ledger entry id" />
                 <button onClick={check} disabled={checking || !checkId.trim()}>
                   {checking ? "checking…" : "Verify entry"}
                 </button>
               </div>
               {checkResult && (
                 <p className={`checkresult ${checkResult.ok ? "ok" : "bad"}`} role="status">{checkResult.text}</p>
+              )}
+              {!checkId && latestEntryId && (
+                <p className="cite">or verify the latest entry: <a className="mono" href={`/proof?id=${latestEntryId}`}>{latestEntryId.slice(0, 18)}…</a></p>
               )}
             </div>
           </div>

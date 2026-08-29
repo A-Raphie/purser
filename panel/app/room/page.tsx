@@ -25,6 +25,7 @@ type State = {
     acp_earned_micro?: number;
     acp_jobs?: number;
     recent_decisions?: Decision[];
+    recent_earnings?: { job_id: string; amount_micro: number; rule: string; date: string }[];
     ledger_total?: number;
   };
 };
@@ -222,7 +223,7 @@ export default function Room() {
             </div>
             <div className="sb-fact">
               <span className="k">usdc on base</span>
-              <span className="v green num">{wallet?.usdc != null ? wallet.usdc.toFixed(6) : "…"}</span>
+              <span className="v green num">{wallet?.usdc != null ? wallet.usdc.toFixed(6) : "n/a"}</span>
             </div>
             <div className="sb-fact">
               <span className="k">memory</span>
@@ -395,8 +396,14 @@ export default function Room() {
                       <span className="d-sku"> {d.request.sku}</span>
                     </div>
                     <div className={`d-amt ${d.pending ? "pending" : d.decision.approve ? "paid" : "kept"}`}>
-                      <span className="num">{usd(d.request.amount_micro)}</span>
-                      <span className="d-dir">{d.pending ? "asking" : d.decision.approve ? "spent" : "kept"}</span>
+                      {d.request.amount_micro <= 0 ? (
+                        <span className="d-dir">invalid ask</span>
+                      ) : (
+                        <>
+                          <span className="num">{usd(d.request.amount_micro)}</span>
+                          <span className="d-dir">{d.pending ? "asking" : d.decision.approve ? "spent" : "kept"}</span>
+                        </>
+                      )}
                     </div>
                     {!d.pending && <div className="d-why">{d.decision.reason}</div>}
                     {!d.pending && !d.decision.approve && d.decision.recalled.length > 0 && (
@@ -471,7 +478,7 @@ export default function Room() {
                               <span className={`dot sm ${v.status === "retired" ? "dead" : ""}`} aria-hidden="true" /> {v.name}
                             </span>
                             <span className="d">
-                              {v.status === "retired" ? "retired" : `${v.purchases ?? 0} buys`}
+                              {v.status === "retired" ? "retired" : `${v.purchases ?? 0} ${v.purchases === 1 ? "buy" : "buys"}`}
                             </span>
                           </div>
                           <div className="trustbar" role="img"
@@ -502,6 +509,17 @@ export default function Room() {
                         <div className="rowline"><span className="n dim">…</span><span className="d num">+{String(ledgerTotal - 8)} earlier</span></div>
                       )}
                       {ledgerTotal === 0 && <p className="empty">no journal entries yet.</p>}
+                      {(state?.tiers.recent_earnings ?? []).length > 0 && (
+                        <>
+                          <div className="ctx-head" style={{ marginTop: 10 }}>acp earnings</div>
+                          {(state?.tiers.recent_earnings ?? []).map((e) => (
+                            <div key={e.job_id} className="rowline">
+                              <span className="n">job {String(e.job_id)}</span>
+                              <span className="d num">+{usd(e.amount_micro ?? 0)} · {String(e.rule)}</span>
+                            </div>
+                          ))}
+                        </>
+                      )}
                     </div>
                   )}
 
