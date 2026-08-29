@@ -178,7 +178,7 @@ def run_request(body: RequestIn) -> dict[str, Any]:
 @app.post("/api/wipe")
 def wipe(confirm: bool = False) -> dict[str, Any]:
     if not confirm:
-        return {"error": "pass confirm=true — wiping deletes the ledger on purpose"}
+        return {"error": "pass confirm=true: wiping deletes the ledger on purpose"}
     db = Path(_db_path())
     if db.exists():
         db.unlink()
@@ -266,7 +266,7 @@ if PANEL_OUT.exists():
 else:
     @app.get("/")
     def no_panel() -> JSONResponse:
-        return JSONResponse({"note": "panel not built yet — run npm run build in panel/"})
+        return JSONResponse({"note": "panel not built yet: run npm run build in panel/"})
 
 
 if __name__ == "__main__":

@@ -14,7 +14,7 @@ const mono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Purser -- manifest & ledger",
+  title: "Purser · manifest & ledger",
   description:
     "Control room for a treasurer agent whose judgment lives in Sibyl Memory.",
 };

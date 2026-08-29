@@ -8,7 +8,7 @@
                     ╰──────────────╯
 ```
 
-> A treasurer agent crew on Base that spends via x402 micropayments — and keeps
+> A treasurer agent crew on Base that spends via x402 micropayments, and keeps
 > every vendor trust score, budget rule, and purchase it ever made in persistent
 > memory, so a fresh session never double-pays or trusts a bad vendor twice.
 
@@ -21,38 +21,38 @@ lands. Claims on this page are only written once they're runnable.
 For operators funding autonomous agents, Purser is the money officer of the
 crew. A scout finds what's needed, the purser decides and pays (real x402
 payments on Base), an auditor reconciles the ledger. Their coordination channel
-is not messages — it is Sibyl Memory itself.
+is not messages: it is Sibyl Memory itself.
 
 Delete the memory layer and the crew is lobotomized: it re-buys duplicates,
 ignores learned budgets, and trusts vendors it swore off. That is the point.
 
-**Positioning.** The agent-treasury lane is well proven — by deterministic
+**Positioning.** The agent-treasury lane is well proven, by deterministic
 policy engines that treat memory as non-authoritative on the money path by
 doctrine. Purser is the inversion those architectures refuse to build:
 judgment that compounds. Qualitative memory (this vendor shorted us twice,
-that bargain recurs, that exception was granted) drives every decision —
+that bargain recurs, that exception was granted) drives every decision:
 while hard deterministic caps (per-purchase, daily, non-positive-amount
 refusal) still fence the money. Memory decides, code enforces, every decision
 lands in an append-only journal you can verify without a wallet.
 
-## Canonical run — real entries, paid and refused together
+## Canonical run: real entries, paid and refused together
 
 The refused row is the product working. Every id below is verifiable in the
 public checker (`/proof?id=…` when the sidecar runs, or `eval/` scripts).
 
 | ledger entry | what happened | amount | onchain |
 |---|---|---|---|
-| spike B, attempt 1 | PAID, response lost in flight, settled — caught by balance reconcile | $0.00375 | balance-verified (the journal-then-reconcile lesson) |
+| spike B, attempt 1 | PAID, response lost in flight, settled, caught by balance reconcile | $0.00375 | balance-verified (the journal-then-reconcile lesson) |
 | spike B, attempt 2 | PAID, receipt in hand | $0.00375 | [0xbbb6d430…](https://basescan.org/tx/0xbbb6d430a7acbd7d8d98d622c6aee050468233bb1405f6e4dce8e7433d605052) |
 | via panel API | PAID | $0.00375 | [0x28ce1b23…](https://basescan.org/tx/0x28ce1b23de3d23bf7945df729274b660e919290c944035b84f09000d6c9750a0) |
 | `87341082-2edd` | PAID through `/api/request`, proof page live | $0.00375 | [0x53c9bb81…](https://basescan.org/tx/0x53c9bb81704cc27e2640cf62fe1b21289f99c056c99c7cd9ee7308235cc8955d) |
-| `2db1f7df-07a7` | **REFUSED** — duplicate of the row above, memory cited the prior purchase | $0.00375 kept | no payment: the guardrail firing |
-| ACP job [75160](https://basescan.org/tx/0xb0569dd227cdf52a3d87ecd619b6912f820d891f79c861644e89201526a25d2d) | **EARNED** — a client agent paid $0.01 for a spend-check; purser refused the duplicate citing the recalled purchase, verdict delivered as the deliverable | +$0.01 | deliverable hash `0xb0569dd2…`, escrow released on Base |
+| `2db1f7df-07a7` | **REFUSED** · duplicate of the row above, memory cited the prior purchase | $0.00375 kept | no payment: the guardrail firing |
+| ACP job [75160](https://basescan.org/tx/0xb0569dd227cdf52a3d87ecd619b6912f820d891f79c861644e89201526a25d2d) | **EARNED** · a client agent paid $0.01 for a spend-check; purser refused the duplicate citing the recalled purchase, verdict delivered as the deliverable | +$0.01 | deliverable hash `0xb0569dd2…`, escrow released on Base |
 
 Ledger entry ids are per-database: the panel's local ledger resets when you
 wipe it (that is the amnesia demo), so `87341082-2edd` / `2db1f7df-07a7`
 resolve only until the next wipe. The **onchain tx hashes above are
-permanent** — those verify on Basescan forever. To see a live refusal,
+permanent**: those verify on Basescan forever. To see a live refusal,
 run the same request twice in the panel and open its "public proof" link.
 
 ## Honest status
@@ -67,7 +67,7 @@ run the same request twice in the panel and open its "public proof" link.
 | Trust updates from payment outcomes | 🟢 settled +0.05, failed −0.15, auto-retire below floor |
 | Crew (scout → purser → auditor through HOT handoffs) | 🟢 shipped, fresh process per role, `scripts/demo_crew.py` |
 | Auditor drift detection | 🟢 reconciles COLD journal vs WARM purchases, flags drift |
-| Virtuals ACP job (spend-check service) | 🟢 shipped — earned $0.01 on ACP job 75160 (verdict from memory, escrow released) |
+| Virtuals ACP job (spend-check service) | 🟢 shipped, earned $0.01 on ACP job 75160 (verdict from memory, escrow released) |
 | Demo video + build-in-public posts | 🔴 Phase 4 |
 | Hash-anchored memory snapshots | 🔴 roadmap (provenance of memory) |
 
@@ -100,12 +100,12 @@ run the same request twice in the panel and open its "public proof" link.
 | REFERENCE | policy docs | setup | all | static rules |
 | ARCHIVE | retired vendors | purser (`reason` required) | audit | kept, never deleted |
 
-(A full memory map with `file:line` links lands here during the build window —
+(A full memory map with `file:line` links lands here during the build window:
 the submission requires judges to find memory calls in under 2 minutes.)
 
 ## Try it live
 
-**https://purser-production-ef37.up.railway.app** — the full control room, hosted on Railway in simulate mode (no keys on the host; the ledger ships seeded with the canonical run incl. the ACP earning). Wipe is public too — that's the amnesia demo, it reseeds by running the litmus.
+**https://purser-production-ef37.up.railway.app** · the full control room, hosted on Railway in simulate mode (no keys on the host; the ledger ships seeded with the canonical run incl. the ACP earning). Wipe is public too — that's the amnesia demo, it reseeds by running the litmus.
 
 ## Install
 
@@ -130,7 +130,7 @@ python scripts/demo_crew.py
 # the two fonts at build time, so build with network)
 cd panel && npm install && npm run build && cd ..
 
-# optional: the ACP leg (earn on Virtuals) — the SDK needs Python <3.13,
+# optional: the ACP leg (earn on Virtuals): the SDK needs Python <3.13,
 # so it lives in its own venv; everything else runs without it
 python3.11 -m venv .venv-acp
 .venv-acp/bin/pip install -r requirements-acp.txt
@@ -151,7 +151,7 @@ mode, clearly labeled.
 
 ## Memory map (judges: every memory read/write in under 2 minutes)
 
-All memory access goes through ONE module — `src/purser/memory.py` — nothing
+All memory access goes through ONE module, `src/purser/memory.py`: nothing
 else in the codebase touches Sibyl. The interesting lines:
 
 | What | Where | Calls |
@@ -180,14 +180,14 @@ amnesia twin pays again. Real mode flips the same `pay()` the terminal uses.
 
 ## Prior work declared
 
-- **Settle** (BOT Chain Builder Challenge) — agents with onchain budgets.
+- **Settle** (BOT Chain Builder Challenge), agents with onchain budgets.
   Purser reuses the *problem*, not the code; the memory layer makes the
   judgment persistent, which Settle lacked.
-- **MemLens** (Hack Hydra) — agent-memory debugger. Domain familiarity only.
+- **MemLens** (Hack Hydra), agent-memory debugger. Domain familiarity only.
 
 ## Provenance
 
-Built for the [Sibyl Labs Hackathon](https://hack.sibyllabs.org), Sep 1–10 2026,
+Built for the [Sibyl Labs Hackathon](https://hack.sibyllabs.org), Sep 1 to 10 2026,
 by Raphie Ohagwu (solo, team "Raphie leveling"). All payments shown in demos are
 real onchain transactions; failures are published, not hidden.
 

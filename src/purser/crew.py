@@ -50,7 +50,7 @@ def run_scout(db: str, shift: int, need: str, vendor: str, sku: str,
     }
     if prior is not None:
         handoff["scout_note"] = (f"likely duplicate: purchased {prior.get('date')} "
-                                 f"(tx {str(prior.get('tx', ''))[:14]}…) — purser to verify")
+                                 f"(tx {str(prior.get('tx', ''))[:14]}…); purser to verify")
     mem.set_handoff(*SCOUT_TO_PURSER, handoff)
     mem.journal(acted=[f"scout filed need '{need}' ({vendor}:{sku}) for shift {shift}"],
                 extra={"kind": "crew", "role": "scout", "shift": shift, "date": _today()})

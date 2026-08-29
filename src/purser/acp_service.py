@@ -167,12 +167,12 @@ def run_seller(db: str, network: str | None = None) -> None:
         ),
         on_new_task=make_on_new_task(mem),
     )
-    print(f"purser ACP seller listening ({network}) — sell the verdict, journal the earning.")
+    print(f"purser ACP seller listening ({network}): sell the verdict, journal the earning.")
     threading.Event().wait()
 
 
 if __name__ == "__main__":
-    ap = argparse.ArgumentParser(description="purser ACP seller — spend-check as a service")
+    ap = argparse.ArgumentParser(description="purser ACP seller: spend-check as a service")
     ap.add_argument("--db", required=True, help="path to the Sibyl memory DB")
     ap.add_argument("--network", default=None, help="base-sepolia (default) | base-mainnet")
     args = ap.parse_args()

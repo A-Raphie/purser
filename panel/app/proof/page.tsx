@@ -9,7 +9,7 @@ type Proof = {
   basescan?: string | null; recalled?: string[]; acted?: string[]; error?: string;
 };
 
-const usd = (micro?: number) => micro != null ? `$${(micro / 1e6).toFixed(6)}` : "—";
+const usd = (micro?: number) => micro != null ? `$${(micro / 1e6).toFixed(6)}` : "n/a";
 
 function ProofBody() {
   const params = useSearchParams();

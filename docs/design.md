@@ -1,10 +1,10 @@
-# Purser — Design (control room)
+# Purser: Design (control room)
 
 The source of truth for the panel. Every screen defers to this file.
 
 ## Feel
 
-Ledger — dense, evidential, calm. A ship's purser keeps records, not moods.
+Ledger: dense, evidential, calm. A ship's purser keeps records, not moods.
 
 ## Audience
 
@@ -65,7 +65,7 @@ chip, brass outline.
 
 ## User flow (single screen, build order)
 
-1. Control room (the only screen) — zones in reading order:
+1. Control room (the only screen): zones in reading order:
    masthead (name, wallet, USDC balance, sim/real state) → request box →
    decision feed (newest first, refusal evidence expands inline) →
    tier inspector (WARM/COLD/HOT/ARCHIVE tabs, counts, drill-down rows) →
@@ -80,20 +80,20 @@ CTAs, three-column feature grids, purple/indigo anything.
 ## Ship gate (added Aug 27, after the atmosphere drift)
 
 Any visual change ships with a three-page screenshot comparison (/, /room,
-/proof at the same viewport) — pages are verified *together*, never alone.
+/proof at the same viewport): pages are verified *together*, never alone.
 The comparison is part of the commit message evidence. Known-accepted
 difference: the proof page's slimmer surface header (focused page, not an
 app surface).
 
 ## Audit battery (standing rule, Aug 27)
 
-Before every UI commit, run — against the RENDERED build, not the code alone:
+Before every UI commit, run, against the RENDERED build, not the code alone:
 (1) ui-craft pre-ship checklist incl. cross-screen consistency; (2) winsznx-ui
 avoid-list + anatomy conformance (sidebar OR topbar, never both); (3)
 duplicate-action sweep (any action/text rendered twice on a page);
 (4) system conformance (type scale, radius, one label/empty/brand rule);
 (5) dead-class + link sweep; (6) three-page screenshot gate;
-(7) `impeccable` critique — dual-agent (design review + detect.mjs), Nielsen
+(7) `impeccable` critique, dual-agent (design review + detect.mjs), Nielsen
 /40 persisted to .impeccable/critique/ with trend. A change is not
 done until the battery passes clean. Checklists are gates, not reading.
 

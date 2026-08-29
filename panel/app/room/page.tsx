@@ -180,7 +180,7 @@ export default function Room() {
     (h) => !feed.some((d) => !d.pending && d.ledger_id === h.ledger_id));
   const decisions = [...feed, ...history];
   const lastPay = purchases[0];
-  const lastEntry = loadErr ? "—"
+  const lastEntry = loadErr ? "n/a"
     : lastPay ? (String(lastPay.tx ?? "").startsWith("0x") ? String(lastPay.tx).slice(0, 12) : "simulated")
     : "none";
   const isEmpty = !loadErr && purchases.length === 0 && (state?.tiers.refusals_total ?? 0) === 0;
@@ -306,7 +306,7 @@ export default function Room() {
               ) : (
                 <>
                   <span className="k">spent on record</span>
-                  <span className="hero-num num">{loadErr ? "—" : usd(heroSpent)}</span>
+                  <span className="hero-num num">{loadErr ? "n/a" : usd(heroSpent)}</span>
                   {series.length > 0 ? (
                     <>
                       <Sparkline points={series} width={260} height={46} />
@@ -392,7 +392,7 @@ export default function Room() {
                   <div className="body">
                     <div className="reason">
                       {d.request.vendor}:{d.request.sku} · <span className="num">{usd(d.request.amount_micro)}</span>
-                      {d.pending ? " — recalling memory…" : ` — ${d.decision.reason}`}
+                      {d.pending ? " · recalling memory…" : ` · ${d.decision.reason}`}
                     </div>
                     {!d.pending && !d.decision.approve && d.decision.recalled.length > 0 && (
                       <div className="ctx">

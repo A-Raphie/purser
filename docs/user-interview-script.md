@@ -1,7 +1,7 @@
-# Purser — User Interview Script (PMF evidence)
+# Purser: User Interview Script (PMF evidence)
 
 Goal: verify (or kill) the claim that **operators of funded agents** recognize
-double-pay / budget-blowout / bad-vendor pain — with specifics, not opinions.
+double-pay / budget-blowout / bad-vendor pain, with specifics, not opinions.
 This feeds the README's PMF section and the +10 rubric bonus. Post in:
 Sibyl Discord · Base Discord (x402 / agent channels) · x402 community ·
 Virtuals Discord (agent operators).
@@ -15,7 +15,7 @@ Virtuals Discord (agent operators).
    unprompted referrals, volunteered workflow details, specific past incidents
    with numbers.
 
-## Opening post (Discord thread — do NOT mention the product)
+## Opening post (Discord thread, do NOT mention the product)
 
 > Building something for the Sibyl hackathon and trying to understand how
 > people actually run agents with wallets. Anyone here have an agent that
@@ -33,7 +33,7 @@ Virtuals Discord (agent operators).
 4. **Money and stakes:** "What did the worst incident cost you? What happens
    if you don't solve it? Who else on your team feels it?"
 5. **Referral sweep:** "Who else should I talk to? Who has this worse?"
-6. **Only at the end:** one line on what you're building — then watch for
+6. **Only at the end:** one line on what you're building, then watch for
    "how much / when can I try / can I see it", not "cool idea".
 
 ## Signal table (fill per conversation)
@@ -52,4 +52,4 @@ Virtuals Discord (agent operators).
 ## Timing
 
 Post before Sep 3 (informs README + post #1). Record answers in this file's
-signal tables — they are the PMF evidence artifact.
+signal tables: they are the PMF evidence artifact.
