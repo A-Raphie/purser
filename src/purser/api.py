@@ -272,5 +272,7 @@ else:
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app, host="127.0.0.1",
-                port=int(os.environ.get("PURSER_PANEL_PORT", "8788")))
+    # 127.0.0.1 locally; PaaS routers (Railway et al.) inject PORT and need 0.0.0.0.
+    host = "0.0.0.0" if os.environ.get("PORT") else "127.0.0.1"
+    port = int(os.environ.get("PORT") or os.environ.get("PURSER_PANEL_PORT", "8788"))
+    uvicorn.run(app, host=host, port=port)

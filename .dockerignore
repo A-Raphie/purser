@@ -1,0 +1,14 @@
+.env
+.venv
+.venv-acp
+.git
+.runtime
+runtime
+*.db
+*.db-shm
+*.db-wal
+node_modules
+panel/node_modules
+panel/.next
+eval/results
+spikes/*.db
