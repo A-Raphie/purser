@@ -14,7 +14,7 @@ gate). Nothing is published until you approve the final cut.
 
 ---
 
-## Scene 1 · 0:00–0:12 · Landing hook · Pitch
+## Scene 1 · 0:00-0:12 · Landing hook · Pitch
 
 **Show:** the landing at the hosted URL, scrolled to the hero: "Agents with
 wallets forget everything. The treasurer shouldn't." and the live instrument
@@ -30,7 +30,7 @@ hero stats. No clicks. Hold the hero numbers for a beat.
 **Criterion:** Pitch (hook: danger first, name second; question planted:
 "what stops it paying twice?" · answered in Scene 5 and the close).
 
-## Scene 2 · 0:12–0:30 · Deployment proof · Execution
+## Scene 2 · 0:12-0:30 · Deployment proof · Execution
 
 **Show:** zoom out briefly so the URL bar is readable:
 purser-production-ef37.up.railway.app. Then into the control room: the
@@ -47,7 +47,7 @@ Hold 3 beats, one per stat group.
 
 **Criterion:** Execution (live hosted deploy, real data, no mocks).
 
-## Scene 3 · 0:30–1:12 · The memory loop · Memory (core)
+## Scene 3 · 0:30-1:12 · The memory loop · Memory (core)
 
 **Show:** the command bar. Type the canned request (weather.x402.press,
 lagos-weather-current, $0.003750). Click Run request. The PAID · SIMULATED
@@ -68,7 +68,7 @@ date and tx. This is the longest hold in the video.
 
 **Criterion:** Memory load-bearing (the dedup loop with recalled evidence).
 
-## Scene 4 · 1:12–1:36 · Guardrails · Memory
+## Scene 4 · 1:12-1:36 · Guardrails · Memory
 
 **Show:** scroll the decisions feed to the cap refusal (storage.x402.example,
 $0.030000 vs the $0.02 per-purchase cap, policy reference recalled), then the
@@ -83,7 +83,7 @@ auditor replays the journal against the ledger. On screen: clean."
 
 **Criterion:** Memory (guardrail breadth: caps, policy recall, auditor).
 
-## Scene 5 · 1:36–2:06 · The amnesia twin · Memory (thesis)
+## Scene 5 · 1:36-2:06 · The amnesia twin · Memory (thesis)
 
 **Show:** the sidebar Wipe ledger. First click arms it: "Confirm: wipe" plus
 the scope line ("forgets 2 vendors · 7 entries"). Second click wipes. The
@@ -101,7 +101,7 @@ Silent beat after "it pays."
 **Criterion:** Memory (the litmus: delete DB, double-pays; this is the
 sponsor's top criterion performed live).
 
-## Scene 6 · 2:06–2:30 · Fresh-session proof · Execution
+## Scene 6 · 2:06-2:30 · Fresh-session proof · Execution
 
 **Show:** split view: terminal on the left. `git log -1` shows the commit
 hash on screen. Then `python scripts/demo_two_sessions.py` runs: session 1
@@ -118,7 +118,7 @@ the demo script, stop after session 2's REFUSE line prints.
 **Criterion:** Execution (fresh-session recall proof, the submission
 requirement: continuous, unedited, timestamp/commit on screen).
 
-## Scene 7 · 2:30–2:50 · It earns · Innovation
+## Scene 7 · 2:30-2:50 · It earns · Innovation
 
 **Show:** back to the control room, memory tiers journal tab: the earning
 entry (+$0.01, ACP job 75160). Terminal or README beside it showing the
@@ -134,7 +134,7 @@ then on the deliverable hash. Two beats on "earn".
 
 **Criterion:** Innovation (memory as a sellable service, Virtuals leg live).
 
-## Scene 8 · 2:50–3:00 · Close · Pitch
+## Scene 8 · 2:50-3:00 · Close · Pitch
 
 **Show:** the landing, both links readable: the live URL and
 github.com/A-Raphie/purser. Final frame holds both.
