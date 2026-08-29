@@ -128,7 +128,15 @@ label { display: block; margin: 12px 0 4px; color: var(--muted); font-size: 10px
 .card.refuse { animation: shake 300ms ease-out 80ms; }
 .card .rule { color: var(--muted); font-family: var(--font-data); font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; }
 .card .body { padding: 12px 14px; }
-.card .reason { font-size: 13px; }
+/* decision statement: who, the money with its direction, then the why */
+.d-who { font-size: 13px; font-weight: 700; }
+.d-who .d-sku { font-family: var(--font-data); font-size: 11px; color: var(--dim); font-weight: 400; }
+.d-amt { display: flex; align-items: baseline; gap: 8px; font-size: 22px; font-weight: 800; letter-spacing: -0.02em; margin: 6px 0 2px; }
+.d-amt .d-dir { font-family: var(--font-data); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--dim); font-weight: 600; }
+.d-amt.paid { color: var(--live); }
+.d-amt.kept { color: var(--fg); }
+.d-amt.pending { color: var(--dim); }
+.d-why { color: var(--muted); margin-bottom: 2px; }
 .card .meta { margin-top: 8px; color: var(--dim); font-size: 12px; display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
 .card .meta .tx, .tx { color: var(--accent); text-decoration: none; font-family: var(--font-data); }
 

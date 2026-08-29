@@ -390,10 +390,15 @@ export default function Room() {
                     {!d.pending && <span className="rule">{d.decision.rule}</span>}
                   </div>
                   <div className="body">
-                    <div className="reason">
-                      {d.request.vendor}:{d.request.sku} · <span className="num">{usd(d.request.amount_micro)}</span>
-                      {d.pending ? " · recalling memory…" : ` · ${d.decision.reason}`}
+                    <div className="d-who">
+                      {d.request.vendor}
+                      <span className="d-sku"> {d.request.sku}</span>
                     </div>
+                    <div className={`d-amt ${d.pending ? "pending" : d.decision.approve ? "paid" : "kept"}`}>
+                      <span className="num">{usd(d.request.amount_micro)}</span>
+                      <span className="d-dir">{d.pending ? "asking" : d.decision.approve ? "spent" : "kept"}</span>
+                    </div>
+                    {!d.pending && <div className="d-why">{d.decision.reason}</div>}
                     {!d.pending && !d.decision.approve && d.decision.recalled.length > 0 && (
                       <div className="ctx">
                         <div className="ctx-head">recalled from memory</div>
@@ -410,7 +415,6 @@ export default function Room() {
                     {!d.pending && (
                       <div className="meta">
                         <span className="tchip">x402</span>
-                        <span className="tchip">{d.decision.approve ? "memory·ok" : `memory·${d.decision.rule}`}</span>
                         {d.pay_mode === "simulate" && <span className="sim-chip">simulated</span>}
                         {d.ledger_id && (
                           <>
