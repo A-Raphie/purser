@@ -15,6 +15,17 @@ from typing import Any
 
 _REAL_TX = re.compile(r"^0x[0-9a-fA-F]{64}$")  # sim- and malformed rows never link
 
+# Canonical onchain receipts (the README table): permanent artifacts of this
+# product, shown regardless of which ledger is mounted.
+CANONICAL_RECEIPTS = [
+    {"tx": "0xbbb6d430a7acbd7d8d98d622c6aee050468233bb1405f6e4dce8e7433d605052",
+     "vendor": "weather.x402.press", "amount_micro": 3750, "label": "canonical"},
+    {"tx": "0x28ce1b23de3d23bf7945df729274b660e919290c944035b84f09000d6c9750a0",
+     "vendor": "weather.x402.press", "amount_micro": 3750, "label": "canonical"},
+    {"tx": "0x53c9bb81704cc27e2640cf62fe1b21289f99c056c99c7cd9ee7308235cc8955d",
+     "vendor": "weather.x402.press", "amount_micro": 3750, "label": "canonical"},
+]
+
 from fastapi import FastAPI, Request
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.responses import FileResponse, JSONResponse
@@ -236,12 +247,18 @@ def wallet() -> dict[str, Any]:
 
     mem = _mem()
     receipts = []
+    seen = set()
+    for c in CANONICAL_RECEIPTS:
+        seen.add(c["tx"])
+        receipts.append({**c,
+                         "basescan": f"https://basescan.org/tx/{c['tx']}"})
     for ev in mem.recent_events(limit=100):
         extra = ev.get("extra") or {}
         tx = str(extra.get("tx", "")).strip().strip("'\"")
         if tx and not tx.startswith("0x"):
             tx = "0x" + tx
-        if extra.get("kind") == "payment" and _REAL_TX.match(tx):
+        if extra.get("kind") == "payment" and _REAL_TX.match(tx) and tx not in seen:
+            seen.add(tx)
             receipts.append({
                 "tx": tx, "vendor": extra.get("vendor"),
                 "amount_micro": extra.get("amount_micro"),

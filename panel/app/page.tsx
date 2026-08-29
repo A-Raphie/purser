@@ -220,7 +220,7 @@ REFUSED [dedup]
           </div>
           <div className="rise d1">
             <p className="tbl-title">onchain receipts</p>
-            {receipts.length === 0 && <p className="dim">no onchain receipts visible (sidecar offline?)</p>}
+            {receipts.length === 0 && <p className="dim">no onchain receipts yet (sim runs are labeled, not receipted)</p>}
             <div className="recrows">
               {receipts.slice(0, 4).map((r) => (
                 <a className="recrow" key={r.tx} href={r.basescan} target="_blank" rel="noreferrer">

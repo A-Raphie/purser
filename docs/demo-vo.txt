@@ -1,0 +1,15 @@
+You just gave an AI agent a wallet. Take away its memory, and it will happily pay the same invoice twice. This is Purser: a treasurer that never forgets a decision, because every decision is written down.
+
+This is the live control room, hosted on Railway right now. The treasurer has spent about a cent across real X 4 0 2 payments on Base, and it has already earned a penny of its own, selling verdicts to another agent. Every number here is read from the ledger, live.
+
+Watch the simplest test in the world. Buy the same thing twice. First request: the treasurer checks its memory, finds nothing, pays. Nine tenths of a cent, spent. Second request: same vendor, same item. The ledger already holds this purchase, and the receipt comes back with it. Same request, and this time: refused. The money stays.
+
+Deduplication is one rule of many. Ask for something over budget: refused, and the policy itself is the evidence. Every shift, an independent auditor replays the journal against the ledger. On screen: clean.
+
+Now the part that matters. Delete the memory. On purpose. The treasurer warns me exactly what it is about to forget. Gone. Same request again: and it pays. No memory, no refusal. That is the whole thesis in one click: the behavior was never in the code. It was in the memory.
+
+Not a browser trick. Two separate processes, sharing nothing but the memory. The commit on screen is the build being recorded. Session one buys. Session two, a cold process, reads the same ledger and refuses.
+
+And refusing is a product. On Virtuals, another agent paid Purser one cent to ask that question, should I buy this? The answer was no, the refusal was delivered as the product, and the contract released the escrow. A treasurer that costs money is normal. A treasurer that earns is the point.
+
+Purser. Memory is load-bearing. The live room and the full ledger are one click away: try to make it pay twice.
