@@ -47,6 +47,7 @@ public checker (`/proof?id=…` when the sidecar runs, or `eval/` scripts).
 | via panel API | PAID | $0.00375 | [0x28ce1b23…](https://basescan.org/tx/0x28ce1b23de3d23bf7945df729274b660e919290c944035b84f09000d6c9750a0) |
 | `87341082-2edd` | PAID through `/api/request`, proof page live | $0.00375 | [0x53c9bb81…](https://basescan.org/tx/0x53c9bb81704cc27e2640cf62fe1b21289f99c056c99c7cd9ee7308235cc8955d) |
 | `2db1f7df-07a7` | **REFUSED** — duplicate of the row above, memory cited the prior purchase | $0.00375 kept | no payment: the guardrail firing |
+| ACP job [75160](https://basescan.org/tx/0xb0569dd227cdf52a3d87ecd619b6912f820d891f79c861644e89201526a25d2d) | **EARNED** — a client agent paid $0.01 for a spend-check; purser refused the duplicate citing the recalled purchase, verdict delivered as the deliverable | +$0.01 | deliverable hash `0xb0569dd2…`, escrow released on Base |
 
 Ledger entry ids are per-database: the panel's local ledger resets when you
 wipe it (that is the amnesia demo), so `87341082-2edd` / `2db1f7df-07a7`
@@ -66,7 +67,7 @@ run the same request twice in the panel and open its "public proof" link.
 | Trust updates from payment outcomes | 🟢 settled +0.05, failed −0.15, auto-retire below floor |
 | Crew (scout → purser → auditor through HOT handoffs) | 🟢 shipped, fresh process per role, `scripts/demo_crew.py` |
 | Auditor drift detection | 🟢 reconciles COLD journal vs WARM purchases, flags drift |
-| Virtuals ACP job (spend-check service) | 🟡 code, tests + spike shipped; live earning pending agent registration |
+| Virtuals ACP job (spend-check service) | 🟢 shipped — earned $0.01 on ACP job 75160 (verdict from memory, escrow released) |
 | Demo video + build-in-public posts | 🔴 Phase 4 |
 | Hash-anchored memory snapshots | 🔴 roadmap (provenance of memory) |
 
