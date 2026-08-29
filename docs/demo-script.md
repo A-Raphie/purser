@@ -1,19 +1,5 @@
 # Purser · Demo Video Script
 
-Target: 3:00, single continuous take on the hosted app
-(https://purser-production-ef37.up.railway.app), real Chrome, drawn cursor,
-VO-first. One message the judge should repeat: **it remembers every decision,
-so it never pays twice, and it earns by refusing.**
-
-Format: timestamp · Show (screen) · Say (exact VO) · Do (actions) · Criterion
-(judging weight). Time budget follows the criteria: Memory 40 (~72s),
-Innovation 25 (~45s), Execution 20 (~36s), Pitch 15 (~27s).
-
-Recording notes are at the bottom (preflight, cursor, VO order, confirmation
-gate). Nothing is published until you approve the final cut.
-
----
-
 ## Scene 1 · 0:00-0:12 · Landing hook · Pitch
 
 **Show:** the landing at the hosted URL, scrolled to the hero: "Agents with
@@ -145,41 +131,3 @@ are one click away: try to make it pay twice."
 **Do:** no clicks, hold the links, end.
 
 **Criterion:** Pitch (callback to the hook; links on screen per the rules).
-
----
-
-## Rule checklist
-
-- [x] Total ≤ 3:00 (180s)
-- [x] Opens on the landing, hook sentence inside 5s
-- [x] Every scene carries a criterion tag; time matches weights
-- [x] Deployment proof (hosted URL) inside the first third
-- [x] Real data only: every number traces to the hosted ledger or the repo
-- [x] Links on screen at the close (live URL, repo)
-- [x] No explorer tabs: tx/deliverable hashes shown from the room and README
-- [x] Fresh-session requirement: commit hash on screen in scene 6
-- [x] Cursor overlay on every click moment (desktop-demo drawn cursor)
-- [x] No em dashes or double hyphens in any spoken or on-screen line
-
-## TTS notes
-
-- "X 4 0 2" is spelled in the VO, written x402 on screen
-- "USDC" is never spoken; amounts are said as cents ("nine tenths of a cent")
-- Hashes, job ids and URLs stay on screen only; the voice says "the hash on
-  screen", "the job on screen"
-- "Purser" is spoken "purser" (as written)
-
-## Recording notes (desktop-demo)
-
-1. `terminal-preflight` before the take: no stale Chrome, no recorders.
-2. One Chrome window on the empty desktop space, hosted URL, centered; the
-   terminal (scene 6) joins as a second window in the same space.
-3. Drawn cursor from the skill's CDP driver; every click gets the ring.
-4. VO-first: this script is the narration source; dry take for timing, then
-   record VO, then the paced take. Silent beats hold after "spent", after
-   "refused", after "it pays".
-5. The take runs against the hosted app in sim mode. Nothing on camera spends
-   real money; the five real x402 receipts live in the README table, shown in
-   scene 2's framing, never a wallet popup.
-6. Confirmation gate: you watch the final cut (path + duration) and nothing
-   is published until your explicit yes.
