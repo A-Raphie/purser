@@ -188,7 +188,7 @@ amnesia twin pays again. Real mode flips the same `pay()` the terminal uses.
 ## Provenance
 
 Built for the [Sibyl Labs Hackathon](https://hack.sibyllabs.org), Sep 1 to 10 2026,
-by Raphie Ohagwu (solo, team "Raphie leveling"). All payments shown in demos are
+by Raphie (solo, team "Raphie leveling"). All payments shown in demos are
 real onchain transactions; failures are published, not hidden.
 
 ## License
