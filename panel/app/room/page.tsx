@@ -213,7 +213,7 @@ export default function Room() {
           <div>
             <div className="sb-brand">purser<span>.</span></div>
             <div className="sb-status" style={{ marginTop: 6 }}>
-              <span className="dot" aria-hidden="true" /> live · base 8453
+              <span className={`dot ${loadErr ? "dead" : ""}`} aria-hidden="true" /> {loadErr ? "offline" : "live"} · base 8453
             </div>
           </div>
           <div className="sb-facts">
@@ -223,11 +223,11 @@ export default function Room() {
             </div>
             <div className="sb-fact">
               <span className="k">usdc on base</span>
-              <span className="v green num">{wallet?.usdc != null ? wallet.usdc.toFixed(6) : "n/a"}</span>
+              <span className={`v num ${wallet?.usdc != null ? "green" : ""}`}>{wallet?.usdc != null ? wallet.usdc.toFixed(6) : "n/a"}</span>
             </div>
             <div className="sb-fact">
               <span className="k">memory</span>
-              <span className="v">sibyl · 5 tiers</span>
+              <span className="v">sibyl · tiered memory</span>
             </div>
           </div>
           <nav className="sb-nav" aria-label="sections">
@@ -307,7 +307,7 @@ export default function Room() {
               ) : (
                 <>
                   <span className="k">spent on record</span>
-                  <span className="hero-num num">{loadErr ? "n/a" : usd(heroSpent)}</span>
+                  <span className={`hero-num num ${loadErr ? "na" : ""}`}>{loadErr ? "n/a" : usd(heroSpent)}</span>
                   {series.length > 0 ? (
                     <>
                       <Sparkline points={series} width={260} height={46} />
@@ -316,10 +316,10 @@ export default function Room() {
                       </span>
                     </>
                   ) : (
-                    <span className="spark-note">no spend recorded yet</span>
+                    <span className="spark-note">{loadErr ? "ledger unreachable: retrying" : "no spend recorded yet"}</span>
                   )}
                   <span className="chips">
-                    <span className="chip ok">{purchases.length} payments</span>
+                    <span className="chip ok">{purchases.length} payment{purchases.length === 1 ? "" : "s"}</span>
                     {(state?.tiers.refusals_total ?? 0) > 0 && (
                       <span className="chip refuse">{String(state?.tiers.refusals_total)} refused</span>
                     )}
@@ -340,7 +340,7 @@ export default function Room() {
                      style={{ transform: `scaleX(${Math.max(0.02, budgetPct / 100)})` }} />
               </div>
               <span className="spark-note mono num">
-                {usd(spentToday)} / {usdCap(dailyCap)}
+                {loadErr ? "unreachable" : `${usd(spentToday)} / ${usdCap(dailyCap)}`}
               </span>
             </section>
 
@@ -376,7 +376,7 @@ export default function Room() {
             <section className="gcard span7" id="ledger" aria-label="decisions">
               <span className="k">decisions</span>
               {decisions.length === 0 && (
-                <p className="empty">No decisions on record. Run a request above.</p>
+                <p className="empty">{loadErr ? "Ledger unreachable: decisions will appear when the connection returns." : "No decisions on record. Run a request above."}</p>
               )}
               {decisions.map((d, i) => (
                 <article key={i} className={`card ${d.pending ? "pending" : d.decision.approve ? "approve" : "refuse"}`}>
@@ -587,6 +587,9 @@ export default function Room() {
                 <span className="who">{r.vendor} <span className="num">{usd(r.amount_micro)}</span></span>
               </span>
             ))}
+            {receipts.length > 0 && (
+              <span className="empty">these settled payments persist onchain: wiping memory does not undo them</span>
+            )}
           </footer>
         </div>
       </div>

@@ -16,6 +16,14 @@ type Receipt = { tx: string; vendor: string; amount_micro: number; basescan: str
 
 const usd = (micro: number) => `$${(micro / 1e6).toFixed(6)}`;
 
+// These three transactions are permanently onchain (see README provenance
+// table), so the static shell renders them before the ledger API answers.
+const CANONICAL_RECEIPTS: Receipt[] = [
+  { tx: "0xbbb6d430a7acbd7d8d98d622c6aee050468233bb1405f6e4dce8e7433d605052", vendor: "weather.x402.press", amount_micro: 3750, basescan: "https://basescan.org/tx/0xbbb6d430a7acbd7d8d98d622c6aee050468233bb1405f6e4dce8e7433d605052" },
+  { tx: "0x28ce1b23de3d23bf7945df729274b660e919290c944035b84f09000d6c9750a0", vendor: "weather.x402.press", amount_micro: 3750, basescan: "https://basescan.org/tx/0x28ce1b23de3d23bf7945df729274b660e919290c944035b84f09000d6c9750a0" },
+  { tx: "0x53c9bb81704cc27e2640cf62fe1b21289f99c056c99c7cd9ee7308235cc8955d", vendor: "weather.x402.press", amount_micro: 3750, basescan: "https://basescan.org/tx/0x53c9bb81704cc27e2640cf62fe1b21289f99c056c99c7cd9ee7308235cc8955d" },
+];
+
 function Tick({ value }: { value: string }) {
   // numbers flash brass when they change: the ledger is alive
   const prev = useRef(value);
@@ -34,7 +42,7 @@ function Tick({ value }: { value: string }) {
 export default function Landing() {
   const [live, setLive] = useState<Live | null>(null);
   const [err, setErr] = useState(false);
-  const [receipts, setReceipts] = useState<Receipt[]>([]);
+  const [receipts, setReceipts] = useState<Receipt[]>(CANONICAL_RECEIPTS);
   const [checkId, setCheckId] = useState("");
   const [checkResult, setCheckResult] = useState<{ ok: boolean; text: string } | null>(null);
   const [latestEntryId, setLatestEntryId] = useState<string | null>(null);
@@ -77,7 +85,7 @@ export default function Landing() {
         ? { ok: false, text: `not found: ${p.error}` }
         : { ok: true, text: `${p.kind === "refusal" ? "REFUSED" : "PAID"} · ${p.vendor} · ${usd(p.amount_micro ?? 0)} · rule ${p.rule}${p.basescan ? " · onchain receipt linked" : ""}` });
     } catch {
-      setCheckResult({ ok: false, text: "checker unreachable. Is the sidecar running? (python -m purser.api)" });
+      setCheckResult({ ok: false, text: "checker unreachable. Try again in a moment." });
     } finally {
       setChecking(false);
     }
@@ -92,7 +100,7 @@ export default function Landing() {
           <a href="#how">how</a>
           <a href="#proof">proof</a>
           <a href="https://github.com/A-Raphie/purser" target="_blank" rel="noreferrer">github ↗</a>
-          <a href="/room">ledger room ›</a>
+          <a className="roomcta" href="/room">ledger room ›</a>
         </span>
       </header>
 
@@ -122,7 +130,7 @@ export default function Landing() {
               <span>THE LEDGER, LIVE</span>
               <span className="dim">sibyl memory · base 8453</span>
             </div>
-            {err && <div className="inst-body"><span className="dim">ledger offline (sidecar not running)</span></div>}
+            {err && <div className="inst-body"><span className="dim">ledger offline: retrying</span></div>}
             {!err && !live && (
               <div className="inst-body">
                 <div className="skel-row" /><div className="skel-row short" /><div className="skel-row" />
@@ -134,7 +142,7 @@ export default function Landing() {
                   <span className="k">spent on record</span>
                   <span className="v"><Tick value={usd(live.spent_micro)} /></span>
                   <Sparkline points={live.series} width={240} height={40} className="inst-spark" />
-                  <span className="chip ok">{live.payments} payments settled</span>
+                  <span className="chip ok">{live.payments} payment{live.payments === 1 ? "" : "s"} settled</span>
                 </div>
                 <div className="stat-row">
                   <div className="stat"><span className="k">refused</span><span className="v small num"><Tick value={String(live?.refusals ?? 0)} /></span></div>
@@ -175,7 +183,7 @@ REFUSED [dedup]
               <thead><tr><th>metric</th><th className="num">with memory</th><th className="num">amnesia</th></tr></thead>
               <tbody>
                 <tr><td>duplicates paid</td><td className="num hero-zero">0</td><td className="num bad">1</td></tr>
-                <tr><td>blacklisted vendors paid</td><td className="num hero-zero">0</td><td className="num bad">1</td></tr>
+                <tr><td>retired vendors paid</td><td className="num hero-zero">0</td><td className="num bad">1</td></tr>
                 <tr><td>requests refused</td><td className="num hero-zero">3</td><td className="num bad">1</td></tr>
               </tbody>
             </table>
@@ -237,7 +245,7 @@ REFUSED [dedup]
                 </a>
               ))}
             </div>
-            <p className="cite">refused decisions have no tx: that row in the README table is the guardrail firing.</p>
+            <p className="cite">refused decisions have no tx: the refusal itself is the receipt.</p>
           </div>
         </div>
       </section>
@@ -252,7 +260,8 @@ REFUSED [dedup]
       <footer className="foot">
         <span className="brand">purser<span className="mark">.</span></span>
         <span className="credit mono">
-          solo build · team Raphie leveling ·
+          solo build · team Raphie leveling · built by{" "}
+          <a href="https://x.com/a_raphie" target="_blank" rel="noreferrer">Raphie</a> ·
           <a href="https://github.com/A-Raphie/purser"> github.com/A-Raphie/purser</a> · MIT
         </span>
       </footer>

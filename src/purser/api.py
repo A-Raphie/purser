@@ -194,6 +194,11 @@ def run_request(body: RequestIn) -> dict[str, Any]:
     }
 
 
+@app.get("/api/wipe")
+def wipe_hint() -> dict[str, Any]:
+    return {"error": "wipe is POST-only: call /api/wipe?confirm=true with method POST"}
+
+
 @app.post("/api/wipe")
 def wipe(confirm: bool = False) -> dict[str, Any]:
     if not confirm:

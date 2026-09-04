@@ -17,6 +17,14 @@ export const metadata: Metadata = {
   title: "Purser · manifest & ledger",
   description:
     "Control room for a treasurer agent whose judgment lives in Sibyl Memory.",
+  openGraph: {
+    title: "Purser · the treasurer that never forgets a decision",
+    description:
+      "An x402 treasurer agent on Base: it refuses what it already paid for, and it earns by selling verdicts.",
+    url: "https://purser-production-ef37.up.railway.app",
+    siteName: "Purser",
+    type: "website",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

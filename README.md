@@ -105,7 +105,7 @@ the submission requires judges to find memory calls in under 2 minutes.)
 
 ## Try it live
 
-**https://purser-production-ef37.up.railway.app** · the full control room, hosted on Railway in simulate mode (no keys on the host; the ledger ships seeded with the canonical run incl. the ACP earning). Wipe is public too — that's the amnesia demo, it reseeds by running the litmus.
+**https://purser-production-ef37.up.railway.app** · the full control room, hosted on Railway in simulate mode (no keys on the host; the ledger ships seeded with the canonical run incl. the ACP earning). Wipe is public too: that's the amnesia demo, it reseeds by running the litmus.
 
 ## Install
 

@@ -55,7 +55,7 @@ function ProofBody() {
       <section className="proofcard">
         {!id && (
           <div className="empty-state">
-            <p className="mono">no entry id given</p>
+            <p className="mono">verify a ledger entry</p>
             <p>Every payment and refusal is a public entry. Paste an id, or take one from a decision card in the ledger room:</p>
             <form className="checkrow" action="/proof" method="get">
               <input name="id" placeholder="ledger entry id" aria-label="ledger entry id" />
@@ -64,18 +64,19 @@ function ProofBody() {
             {example && (
               <p className="cite">or verify the latest entry: <a className="mono" href={`/proof?id=${example}`}>{example.slice(0, 18)}…</a></p>
             )}
+            <p className="cite"><a href="/">back to the landing ›</a></p>
           </div>
         )}
         {id && state === "loading" && <div className="skeleton tall" aria-label="loading proof" />}
         {id && state === "error" && (
           <div className="empty-state">
-            <p>ledger unreachable. Is the sidecar running?</p>
+            <p>ledger unreachable. Try again in a moment.</p>
             <button onClick={load}>Retry</button>
           </div>
         )}
         {id && state === "done" && proof?.error && (
           <div className="empty-state">
-            <p className="mono">{proof.error}</p>
+            <p>No ledger entry with that id. Entry ids live on the decision cards in the ledger room.</p>
             <a href="/room">back to the ledger room ›</a>
           </div>
         )}

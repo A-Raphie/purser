@@ -39,12 +39,19 @@ class Decision:
 def decide(req: PurchaseRequest, mem: PurserMemory) -> Decision:
     policy: SpendPolicy = mem.load_policy()
 
+    # -1. A request without a vendor is not a purchase (empty vendor crashes
+    #     the memory lookup — caught by the Sep 4 audit pass).
+    if not req.vendor.strip():
+        return Decision(
+            False, "vendor is required", "invalid-vendor", recalled=[], request=req)
+
     # 1. Vendor blacklisted? (ARCHIVE tier — with a reason, by contract)
     vendor = mem.get_vendor(req.vendor)
     if vendor is not None and vendor.get("status") == "retired":
         return Decision(
             False, f"vendor {req.vendor} is retired: {vendor.get('retire_reason', '?')}",
-            "archived", recalled=[f"vendor entity: {vendor}"], request=req)
+            "archived",
+            recalled=[_fmt_vendor(vendor)], request=req)
 
     # 2. Duplicate? (WARM purchase ledger)
     if policy.require_duplicate_check:
@@ -55,7 +62,7 @@ def decide(req: PurchaseRequest, mem: PurserMemory) -> Decision:
                 (f"already purchased {req.sku} from {req.vendor} on "
                  f"{prior.get('date', '?')} (tx {str(prior.get('tx', 'none'))[:18]}…). "
                  "Refusing duplicate."),
-                "dedup", recalled=[f"purchase entity: {prior}"], request=req)
+                "dedup", recalled=[_fmt_purchase(prior, req.sku)], request=req)
 
     # 0. Non-positive money is not a purchase (negative amounts otherwise
     #    sail under every cap — caught by the Aug 26 ship rehearsal).
@@ -79,7 +86,7 @@ def decide(req: PurchaseRequest, mem: PurserMemory) -> Decision:
             False,
             (f"daily cap: spent ${spent_today/1e6:.6f} today + "
              f"${req.amount_micro/1e6:.6f} > ${policy.daily_cap_micro/1e6:.2f}"),
-            "daily", recalled=[f"journal sum for today: {spent_today} micro"], request=req)
+            "daily", recalled=[f"journal sum for today: {_usd(spent_today)}"], request=req)
 
     # 5. Trust floor? (WARM vendor trust)
     if vendor is not None and float(vendor.get("trust", policy.new_vendor_trust)) \
@@ -88,12 +95,30 @@ def decide(req: PurchaseRequest, mem: PurserMemory) -> Decision:
             False,
             (f"vendor trust {vendor.get('trust')} below floor "
              f"{policy.min_vendor_trust}"),
-            "trust", recalled=[f"vendor entity: {vendor}"], request=req)
+            "trust", recalled=[_fmt_vendor(vendor)], request=req)
 
     return Decision(
         True, "no duplicate, within caps, vendor acceptable", "ok",
-        recalled=[f"vendor: {vendor or 'new (default trust)'}",
-                  f"spent today: {spent_today} micro"], request=req)
+        recalled=[f"vendor: {_fmt_vendor(vendor) if vendor else 'new (default trust)'}",
+                  f"spent today: {_usd(spent_today)}"], request=req)
+
+
+def _usd(micro: int) -> str:
+    return f"${micro / 1e6:.6f}"
+
+
+def _fmt_vendor(v: dict[str, Any]) -> str:
+    bits = [str(v.get("name", "?")), f"trust {v.get('trust', '?')}"]
+    if v.get("status") == "retired":
+        bits.append(f"retired: {v.get('retire_reason', '?')}")
+    return " · ".join(bits)
+
+
+def _fmt_purchase(p: dict[str, Any], sku: str) -> str:
+    return (" · ".join([
+        sku, f"bought {p.get('date', '?')}",
+        _usd(int(p.get('amount_micro', 0) or 0)), f"tx {str(p.get('tx', 'none'))[:24]}",
+    ]))
 
 
 def learn_from_outcome(req: PurchaseRequest, dec: Decision, outcome: dict[str, Any],
