@@ -333,7 +333,7 @@ export default function Room() {
 
             <section className="gcard span4" aria-label="daily budget">
               <span className="k">today vs daily cap</span>
-              <span className="stat-num num dim-num">{Math.round(budgetPct)}%</span>
+              <span className="stat-num num dim-num">{loadErr ? "n/a" : `${Math.round(budgetPct)}%`}</span>
               <div className="budget-bar" role="progressbar"
                    aria-valuenow={Math.round(budgetPct)} aria-valuemin={0} aria-valuemax={100}>
                 <div className={`budget-fill ${budgetPct > 80 ? "over" : ""}`}

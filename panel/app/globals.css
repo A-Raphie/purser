@@ -439,8 +439,8 @@ table.mini .bad { color: var(--bad); font-size: 22px; font-weight: 800; }
 .foot { display: flex; justify-content: space-between; align-items: center; padding: 18px 24px; border-top: 1px solid var(--border); }
 .foot .brand { font-weight: 800; letter-spacing: -0.02em; font-size: 18px; }
 .foot .credit { color: var(--muted); font-family: var(--font-data); font-size: 10px; letter-spacing: 1px; }
-.foot .credit a { color: var(--muted); text-decoration: none; }
-.foot .credit a:hover { color: var(--accent); }
+.foot .credit a { color: var(--accent); text-decoration: none; }
+.foot .credit a:hover { text-decoration: underline; }
 
 /* ============================================================================
    FEEDBACK · MOTION
