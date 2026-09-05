@@ -153,6 +153,7 @@ export default function Landing() {
                   <span className="k">spent on record</span>
                   <span className="v"><Tick value={usd(live.spent_micro)} /></span>
                   <Sparkline points={live.series} width={240} height={40} className="inst-spark" />
+                  <span className="spark-note">cumulative spend · usdc on base · not a budget bar</span>
                   <span className="chip ok">{live.payments} payment{live.payments === 1 ? "" : "s"} settled</span>
                 </div>
                 <div className="stat-row">
@@ -221,7 +222,7 @@ REFUSED [dedup]
       <section className="sec" id="control-room">
         <div className="sec-head"><span className="sec-num num">03</span><span className="sec-label">the control room, live</span><span className="sec-rule" /></div>
         <p className="lede">Every surface on this site reads the same live ledger.</p>
-        <p>This is the actual control room, scaled down: the same spent counter, the same decision cards, the same memory tiers the treasurer itself writes to. Nothing here is a screenshot.</p>
+        <p>This is the actual control room, scaled down: the same spent counter, the same decision cards, the same memory tiers the treasurer itself writes to. Nothing here is a screenshot. Purser buys live data for its crew on the x402 agent market: oracle prices, gas, portfolio reads, priced per call in USDC on Base.</p>
         <div className="room-preview">
           <div className="gcard">
             <span className="k">spent on record</span>
