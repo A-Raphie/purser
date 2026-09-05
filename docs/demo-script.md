@@ -4,7 +4,8 @@
 
 **Show:** the landing at the hosted URL, scrolled to the hero: "Agents with
 wallets forget everything. The treasurer shouldn't." and the live instrument
-($0.012750 spent, requests refused, ACP earned).
+($0.012750 spent, 2 payments settled, refused 2, vendors 2, last tx on
+screen; the ACP earned chip lives in scene 2's room, not here).
 
 **Say:** "You just gave an AI agent a wallet. Take away its memory, and it
 will happily pay the same invoice twice. This is Purser: a treasurer that
@@ -123,7 +124,8 @@ then on the deliverable hash. Two beats on "earn".
 ## Scene 8 · 2:50-3:00 · Close · Pitch
 
 **Show:** the landing, both links readable: the live URL and
-github.com/A-Raphie/purser. Final frame holds both.
+github.com/A-Raphie/purser. The footer also credits "built by Raphie"
+(x.com/a_raphie). Final frame holds both.
 
 **Say:** "Purser. Memory is load-bearing. The live room and the full ledger
 are one click away: try to make it pay twice."
@@ -131,3 +133,25 @@ are one click away: try to make it pay twice."
 **Do:** no clicks, hold the links, end.
 
 **Criterion:** Pitch (callback to the hook; links on screen per the rules).
+
+---
+
+## Recording notes (desktop-demo, walletless OS path)
+
+1. `terminal-preflight` before the take: no stale Chrome, no recorders.
+2. Real Chrome profile, new window (never relaunch Chrome), fullscreen on the
+   empty desktop space; the terminal (scene 6) joins as a second window.
+   OS-level clicks (cliclick), coordinates re-measured per scene.
+3. Recorder: ffmpeg avfoundation (`screencapture -v` self-terminates at
+   ~10s); probe with a 15s recording before any scene work.
+4. Per-scene segments: record each scene separately, verify its end-state
+   immediately (poll the app's own API, or eyeball the last frame), re-record
+   just that scene on failure, join at the end with per-segment audio mux.
+5. Silent pacing: never play VO beats aloud during recording; pace by known
+   beat durations. Unique FRESH_SKU per take so dedup state never poisons
+   re-takes; wipe-verify goes through the API confirm, not the UI dialog.
+6. The take runs against the hosted app in sim mode. Nothing on camera spends
+   real money; the three real x402 receipts live in the landing receipts
+   strip, never a wallet popup.
+7. Confirmation gate: you watch the final cut (path + duration) and nothing
+   is published until your explicit yes.
