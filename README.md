@@ -12,9 +12,9 @@
 > every vendor trust score, budget rule, and purchase it ever made in persistent
 > memory, so a fresh session never double-pays or trusts a bad vendor twice.
 
-**Status: pre-build (hackathon window opens Sep 1, 2026).** Everything below is
-the committed architecture; each section links the code that implements it as it
-lands. Claims on this page are only written once they're runnable.
+**Status: built, tested, deployed.** Real x402 payments settled on Base, the
+control room live, 30 tests green, Lighthouse 100s across the board. Everything
+below is implemented; claims on this page are only written once they're runnable.
 
 ## What this is
 
@@ -116,7 +116,7 @@ Python 3.10+ and Node 18+ (panel only).
 ```bash
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt        # Sibyl Memory, x402, FastAPI, tests
-python -m pytest tests/ -q             # 14 green
+python -m pytest tests/ -q             # 30 green
 
 # the core demo: session 2 (fresh process) refuses the duplicate
 python scripts/demo_two_sessions.py
