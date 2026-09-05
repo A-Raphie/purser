@@ -1,11 +1,13 @@
 "use client";
 
+import { productOf } from "../names";
+
 import { Suspense, useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 
 type Proof = {
   id?: string; ts?: string; kind?: string; rule?: string; reason?: string;
-  vendor?: string; amount_micro?: number; status?: string; tx?: string | null;
+  vendor?: string; sku?: string; amount_micro?: number; status?: string; tx?: string | null;
   basescan?: string | null; recalled?: string[]; acted?: string[]; error?: string;
 };
 
@@ -91,7 +93,7 @@ function ProofBody() {
                 <tbody>
                   <tr><th>entry</th><td className="mono num">{proof.id}</td></tr>
                   <tr><th>when</th><td className="mono">{proof.ts}</td></tr>
-                  <tr><th>vendor</th><td>{proof.vendor}</td></tr>
+                  <tr><th>purchase</th><td>{productOf(proof.vendor, proof.sku ?? "")}<br /><span className="mono dim">{proof.vendor} · {proof.sku}</span></td></tr>
                   <tr><th>amount</th><td className="num">{usd(proof.amount_micro)}</td></tr>
                   <tr><th>memory reason</th><td>{proof.reason}</td></tr>
                   {proof.recalled && proof.recalled.length > 0 && (

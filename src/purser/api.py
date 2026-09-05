@@ -18,12 +18,10 @@ _REAL_TX = re.compile(r"^0x[0-9a-fA-F]{64}$")  # sim- and malformed rows never l
 # Canonical onchain receipts (the README table): permanent artifacts of this
 # product, shown regardless of which ledger is mounted.
 CANONICAL_RECEIPTS = [
-    {"tx": "0xbbb6d430a7acbd7d8d98d622c6aee050468233bb1405f6e4dce8e7433d605052",
-     "vendor": "weather.x402.press", "amount_micro": 3750, "label": "canonical"},
-    {"tx": "0x28ce1b23de3d23bf7945df729274b660e919290c944035b84f09000d6c9750a0",
-     "vendor": "weather.x402.press", "amount_micro": 3750, "label": "canonical"},
-    {"tx": "0x53c9bb81704cc27e2640cf62fe1b21289f99c056c99c7cd9ee7308235cc8955d",
-     "vendor": "weather.x402.press", "amount_micro": 3750, "label": "canonical"},
+    {"tx": "0x9eb6c3b7ebc29a60dbfbde302e71e54bac46088b2773ba31a1f210ba80822564",
+     "vendor": "x402.agentfund.net", "amount_micro": 2000, "label": "canonical"},
+    {"tx": "0x9cc4bf9a6d2d26c7f984050c6f87f1b99f8a80d2d2e803126ca447c7768b95d0",
+     "vendor": "x402.agentfund.net", "amount_micro": 1000, "label": "canonical"},
 ]
 
 from fastapi import FastAPI, Request
@@ -227,7 +225,8 @@ def proof(event_id: str) -> dict[str, Any]:
             "id": ev.get("id"), "ts": ev.get("ts"), "kind": extra.get("kind"),
             "rule": extra.get("rule", "ok"),
             "reason": extra.get("reason", "no duplicate, within caps, vendor acceptable"),
-            "vendor": extra.get("vendor"), "amount_micro": extra.get("amount_micro"),
+            "vendor": extra.get("vendor"), "sku": extra.get("sku"),
+            "amount_micro": extra.get("amount_micro"),
             "status": extra.get("status"), "tx": tx or None,
             "basescan": f"https://basescan.org/tx/{tx}" if _REAL_TX.match(tx) else None,
             "recalled": extra.get("recalled", []),

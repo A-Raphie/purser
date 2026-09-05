@@ -48,6 +48,8 @@ public checker (`/proof?id=…` when the sidecar runs, or `eval/` scripts).
 | `87341082-2edd` | PAID through `/api/request`, proof page live | $0.00375 | [0x53c9bb81…](https://basescan.org/tx/0x53c9bb81704cc27e2640cf62fe1b21289f99c056c99c7cd9ee7308235cc8955d) |
 | `2db1f7df-07a7` | **REFUSED** · duplicate of the row above, memory cited the prior purchase | $0.00375 kept | no payment: the guardrail firing |
 | ACP job [75160](https://basescan.org/tx/0xb0569dd227cdf52a3d87ecd619b6912f820d891f79c861644e89201526a25d2d) | **EARNED** · a client agent paid $0.01 for a spend-check; purser refused the duplicate citing the recalled purchase, verdict delivered as the deliverable | +$0.01 | deliverable hash `0xb0569dd2…`, escrow released on Base |
+| agent-market lookup | PAID · the crew's ETH/USD oracle check on Base, via the x402 agent market | $0.002 | [0x9eb6c3b7…](https://basescan.org/tx/0x9eb6c3b7ebc29a60dbfbde302e71e54bac46088b2773ba31a1f210ba80822564) |
+| agent-market lookup | PAID · multi-chain gas check before settling | $0.001 | [0x9cc4bf9a…](https://basescan.org/tx/0x9cc4bf9a6d2d26c7f984050c6f87f1b99f8a80d2d2e803126ca447c7768b95d0) |
 
 Ledger entry ids are per-database: the panel's local ledger resets when you
 wipe it (that is the amnesia demo), so `87341082-2edd` / `2db1f7df-07a7`
@@ -138,7 +140,7 @@ python3.11 -m venv .venv-acp
 # block in .env (see .env.example), and:
 #   .venv-acp/bin/python spikes/spike_c_acp.py                # rail proof
 #   .venv-acp/bin/python -m purser.acp_service --db runtime/panel_memory.db   # seller (from src/)
-#   .venv-acp/bin/python scripts/acp_client.py --vendor weather.x402.press --sku x --amount-micro 3750
+#   .venv-acp/bin/python scripts/acp_client.py --vendor x402.agentfund.net --sku oracle-price-eth --amount-micro 2000
 (cd src && python -m purser.api)       # http://localhost:8788
 # /       landing with live ledger readout + paste-an-id proof checker
 # /room   the control room (requests, decisions, tiers, wipe)

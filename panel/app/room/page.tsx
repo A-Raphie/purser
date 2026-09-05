@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Sparkline } from "../Sparkline";
+import { productOf, VENDORS } from "../names";
 
 type Decision = {
   ledger_id: string | null;
@@ -44,9 +45,9 @@ const usdCap = (micro: number) => `$${(micro / 1e6).toFixed(2)}`;
 const MICRO = 1e6;
 
 export default function Room() {
-  const [vendor, setVendor] = useState("weather.x402.press");
-  const [sku, setSku] = useState("lagos-weather-current");
-  const [amount, setAmount] = useState("0.00375");
+  const [vendor, setVendor] = useState("x402.agentfund.net");
+  const [sku, setSku] = useState("oracle-price-eth");
+  const [amount, setAmount] = useState("0.009");
   const [mode, setMode] = useState("simulate");
   const [busy, setBusy] = useState(false);
   const [loadErr, setLoadErr] = useState(false);
@@ -139,8 +140,8 @@ export default function Room() {
 
   async function runLitmus() {
     if (busy) return;
-    const body = { vendor: "weather.x402.press", sku: "lagos-weather-current",
-                   description: "litmus demo", amount_micro: 3750, pay_mode: "simulate" };
+    const body = { vendor: "x402.agentfund.net", sku: "oracle-price-eth",
+                   description: "litmus demo", amount_micro: 9000, pay_mode: "simulate" };
     await fire(body);   // pays once
     await fire(body);   // same request again: memory must refuse it
   }
@@ -259,6 +260,15 @@ export default function Room() {
               <>LIVE · LEDGER · SIBYL MEMORY · BASE 8453 · MODE {mode === "real" ? "REAL" : "SIM"} · LAST PAYMENT <span className="num">{lastEntry}</span></>
             )}
           </div>
+
+          <div className="market-strip">
+
+            <span className="mk-label">the market</span>
+
+            Purser buys live data for its crew on the x402 agent market — oracle prices, gas, portfolio reads — priced per call in USDC on Base. Every call gets a real receipt.
+
+          </div>
+
 
           <form className="cmdbar" aria-label="request"
                 onSubmit={(e) => { e.preventDefault(); runRequest(); }}>
@@ -392,8 +402,8 @@ export default function Room() {
                   </div>
                   <div className="body">
                     <div className="d-who">
-                      {d.request.vendor}
-                      <span className="d-sku"> {d.request.sku}</span>
+                      {productOf(d.request.vendor, d.request.sku)}
+                      <span className="d-sku"> {d.request.vendor} · {d.request.sku}</span>
                     </div>
                     <div className={`d-amt ${d.pending ? "pending" : d.decision.approve ? "paid" : "kept"}`}>
                       {d.request.amount_micro <= 0 ? (
@@ -475,7 +485,7 @@ export default function Room() {
                         <div key={v.name} className="vendor-row">
                           <div className="rowline">
                             <span className={`n ${v.status === "retired" ? "retired" : ""}`}>
-                              <span className={`dot sm ${v.status === "retired" ? "dead" : ""}`} aria-hidden="true" /> {v.name}
+                              <span className={`dot sm ${v.status === "retired" ? "dead" : ""}`} aria-hidden="true" /> {VENDORS[v.name] ?? v.name}
                             </span>
                             <span className="d">
                               {v.status === "retired" ? "retired" : `${v.purchases ?? 0} ${v.purchases === 1 ? "buy" : "buys"}`}

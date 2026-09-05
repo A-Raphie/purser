@@ -531,3 +531,30 @@ table.mini .bad { color: var(--bad); font-size: 22px; font-weight: 800; }
 @media (prefers-reduced-motion: reduce) {
   * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }
+
+/* ============================================================================
+   MARKET STRIP + CONTROL ROOM PREVIEW (Sep 5 comprehension pass)
+   ========================================================================== */
+.market-strip {
+  margin: 12px 0 2px; padding: 10px 14px;
+  border: 1px dashed var(--border-strong); border-radius: var(--r-in);
+  color: var(--muted); font-size: 12px; line-height: 1.6;
+}
+.market-strip .mk-label {
+  color: var(--accent); font-family: var(--font-data); font-size: 10px;
+  letter-spacing: 1px; text-transform: uppercase; margin-right: 10px;
+}
+.topstatus {
+  color: var(--muted); font-family: var(--font-data); font-size: 10px;
+  letter-spacing: 1px; text-transform: uppercase; margin-left: 18px;
+}
+.room-preview { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 18px 0; }
+.room-preview .gcard { padding: 16px; display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+.room-preview .rp-num { font-size: 34px; font-weight: 800; letter-spacing: -0.02em; color: var(--live); font-variant-numeric: tabular-nums; }
+.room-preview .rp-verdict { font-weight: 800; letter-spacing: 0.02em; }
+.room-preview .rp-verdict.ok { color: var(--live); }
+.room-preview .rp-verdict.bad { color: var(--bad); }
+.room-preview .rp-who { font-size: 13px; font-weight: 700; }
+.room-preview .rp-amt { font-size: 15px; font-weight: 700; }
+.room-preview .rp-tiers { font-family: var(--font-data); font-size: 12px; }
+@media (max-width: 900px) { .room-preview { grid-template-columns: minmax(0, 1fr); } .topstatus { display: none; } }

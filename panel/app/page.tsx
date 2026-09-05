@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Sparkline } from "./Sparkline";
+import { productOf } from "./names";
 
 type Live = {
   payments: number;
@@ -10,18 +11,23 @@ type Live = {
   vendors: number;
   last_tx: string;
   series: number[];
+  cold: number;
+};
+
+type LastDecision = {
+  decision: { approve: boolean; rule: string; reason: string };
+  request: { vendor: string; sku: string; amount_micro: number };
 };
 
 type Receipt = { tx: string; vendor: string; amount_micro: number; basescan: string };
 
 const usd = (micro: number) => `$${(micro / 1e6).toFixed(6)}`;
 
-// These three transactions are permanently onchain (see README provenance
+// These two transactions are permanently onchain (see README provenance
 // table), so the static shell renders them before the ledger API answers.
 const CANONICAL_RECEIPTS: Receipt[] = [
-  { tx: "0xbbb6d430a7acbd7d8d98d622c6aee050468233bb1405f6e4dce8e7433d605052", vendor: "weather.x402.press", amount_micro: 3750, basescan: "https://basescan.org/tx/0xbbb6d430a7acbd7d8d98d622c6aee050468233bb1405f6e4dce8e7433d605052" },
-  { tx: "0x28ce1b23de3d23bf7945df729274b660e919290c944035b84f09000d6c9750a0", vendor: "weather.x402.press", amount_micro: 3750, basescan: "https://basescan.org/tx/0x28ce1b23de3d23bf7945df729274b660e919290c944035b84f09000d6c9750a0" },
-  { tx: "0x53c9bb81704cc27e2640cf62fe1b21289f99c056c99c7cd9ee7308235cc8955d", vendor: "weather.x402.press", amount_micro: 3750, basescan: "https://basescan.org/tx/0x53c9bb81704cc27e2640cf62fe1b21289f99c056c99c7cd9ee7308235cc8955d" },
+  { tx: "0x9eb6c3b7ebc29a60dbfbde302e71e54bac46088b2773ba31a1f210ba80822564", vendor: "x402.agentfund.net", amount_micro: 2000, basescan: "https://basescan.org/tx/0x9eb6c3b7ebc29a60dbfbde302e71e54bac46088b2773ba31a1f210ba80822564" },
+  { tx: "0x9cc4bf9a6d2d26c7f984050c6f87f1b99f8a80d2d2e803126ca447c7768b95d0", vendor: "x402.agentfund.net", amount_micro: 1000, basescan: "https://basescan.org/tx/0x9cc4bf9a6d2d26c7f984050c6f87f1b99f8a80d2d2e803126ca447c7768b95d0" },
 ];
 
 function Tick({ value }: { value: string }) {
@@ -45,6 +51,7 @@ export default function Landing() {
   const [receipts, setReceipts] = useState<Receipt[]>(CANONICAL_RECEIPTS);
   const [checkId, setCheckId] = useState("");
   const [checkResult, setCheckResult] = useState<{ ok: boolean; text: string } | null>(null);
+  const [last, setLast] = useState<LastDecision | null>(null);
   const [latestEntryId, setLatestEntryId] = useState<string | null>(null);
   const [checking, setChecking] = useState(false);
 
@@ -60,10 +67,13 @@ export default function Landing() {
         refusals: s.tiers.refusals_total ?? Math.max(0, s.tiers.cold_count - payments.length),
         spent_micro: payments.reduce((a: number, p: { amount_micro?: number }) => a + (p.amount_micro ?? 0), 0),
         vendors: (s.tiers.warm.vendors ?? []).length,
+        cold: s.tiers.cold_count ?? 0,
         last_tx: (w.last_tx ?? "").slice(0, 12) || "pending",
         series,
       });
       setReceipts(rec);
+      const firstDec = (s.tiers.recent_decisions ?? [])[0];
+      if (firstDec) setLast(firstDec as LastDecision);
       const firstId = (s.tiers.recent_decisions ?? [])[0]?.ledger_id;
       setLatestEntryId(firstId ?? null);
       setErr(false);
@@ -95,6 +105,7 @@ export default function Landing() {
     <main>
       <header className="topbar">
         <span className="brand">purser<span className="mark">.</span></span>
+        <span className="topstatus mono">live · ledger · base 8453 · mode sim</span>
         <span className="topnav">
           <a href="#problem">problem</a>
           <a href="#how">how</a>
@@ -169,9 +180,9 @@ export default function Landing() {
             </p>
             <div className="term" aria-label="a fresh session refusing a duplicate">
               <div className="term-bar"><span />SESSION 2 · FRESH PROCESS</div>
-              <pre>{`$ purser --session 2 --request weather:lagos-current
+              <pre>{`$ purser --session 2 --request agentfund:oracle-price-eth
 REFUSED [dedup]
-  already purchased lagos-weather-current
+  already purchased oracle-price-eth
   on 2026-08-26, tx 0xbbb6d430…
   recalled from: purchase entity (WARM)`}</pre>
             </div>
@@ -207,8 +218,42 @@ REFUSED [dedup]
         </p>
       </section>
 
+      <section className="sec" id="control-room">
+        <div className="sec-head"><span className="sec-num num">03</span><span className="sec-label">the control room, live</span><span className="sec-rule" /></div>
+        <p className="lede">Every surface on this site reads the same live ledger.</p>
+        <p>This is the actual control room, scaled down: the same spent counter, the same decision cards, the same memory tiers the treasurer itself writes to. Nothing here is a screenshot.</p>
+        <div className="room-preview">
+          <div className="gcard">
+            <span className="k">spent on record</span>
+            <span className="rp-num num"><Tick value={usd(live?.spent_micro ?? 0)} /></span>
+            <span className="chips">
+              <span className="chip ok">{live?.payments ?? 0} payments</span>
+              <span className="chip refuse">{live?.refusals ?? 0} refused</span>
+            </span>
+          </div>
+          <div className="gcard">
+            <span className="k">latest decision</span>
+            {last ? (
+              <>
+                <span className={`rp-verdict ${last.decision.approve ? "ok" : "bad"}`}>{last.decision.approve ? "PAID" : "REFUSED"}</span>
+                <span className="rp-who">{productOf(last.request.vendor, last.request.sku)}</span>
+                <span className="rp-amt num">{usd(last.request.amount_micro)}</span>
+                <span className="dim">{last.decision.reason || "no duplicate, within caps, vendor acceptable"}</span>
+              </>
+            ) : (<span className="dim">loading the live ledger…</span>)}
+          </div>
+          <div className="gcard">
+            <span className="k">memory tiers</span>
+            <span className="rp-tiers">sibyl · tiered memory</span>
+            <span className="dim">vendors and budgets in WARM, every payment in a COLD journal, handoffs in HOT state.</span>
+            <span className="chip ok">{live?.vendors ?? 0} vendors known</span>
+          </div>
+        </div>
+        <a className="primary" href="/room">Open the control room</a>
+      </section>
+
       <section className="sec" id="proof">
-        <div className="sec-head"><span className="sec-num num">03</span><span className="sec-label">proof, no wallet needed</span><span className="sec-rule" /></div>
+        <div className="sec-head"><span className="sec-num num">04</span><span className="sec-label">proof, no wallet needed</span><span className="sec-rule" /></div>
         <div className="split">
           <div className="rise">
             <p className="lede">Check any decision yourself.</p>
