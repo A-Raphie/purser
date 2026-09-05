@@ -227,7 +227,7 @@ REFUSED [dedup]
             <span className="k">spent on record</span>
             <span className="rp-num num"><Tick value={usd(live?.spent_micro ?? 0)} /></span>
             <span className="chips">
-              <span className="chip ok">{live?.payments ?? 0} payments</span>
+              <span className="chip ok">{live?.payments ?? 0} payment{live.payments === 1 ? "" : "s"}</span>
               <span className="chip refuse">{live?.refusals ?? 0} refused</span>
             </span>
           </div>
