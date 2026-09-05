@@ -265,7 +265,7 @@ export default function Room() {
 
             <span className="mk-label">the market</span>
 
-            Purser buys live data for its crew on the x402 agent market — oracle prices, gas, portfolio reads — priced per call in USDC on Base. Every call gets a real receipt.
+            Purser buys live data for its crew on the x402 agent market: oracle prices, gas, portfolio reads · priced per call in USDC on Base. Every call gets a real receipt.
 
           </div>
 
