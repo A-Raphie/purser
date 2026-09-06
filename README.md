@@ -105,6 +105,10 @@ run the same request twice in the panel and open its "public proof" link.
 (A full memory map with `file:line` links lands here during the build window:
 the submission requires judges to find memory calls in under 2 minutes.)
 
+## Demo (2:31)
+
+[Watch the demo on X](https://x.com/A_raphie/status/2096396650117820632) · fresh-session recall, real receipts, the refusal citing memory.
+
 ## Try it live
 
 **https://purser-production-ef37.up.railway.app** · the full control room, hosted on Railway in simulate mode (no keys on the host; the ledger ships seeded with the canonical run incl. the ACP earning). Wipe is public too: that's the amnesia demo, it reseeds by running the litmus.
