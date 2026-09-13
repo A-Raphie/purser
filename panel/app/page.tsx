@@ -82,7 +82,14 @@ export default function Landing() {
     }
   }
 
-  useEffect(() => { loadLive(); const t = setInterval(loadLive, 4000); return () => clearInterval(t); }, []);
+  useEffect(() => {
+    loadLive();
+    // Poll only while the tab is visible; hidden tabs burn edge requests (60s cap, was 4s)
+    const t = setInterval(() => {
+      if (document.visibilityState === "visible") loadLive();
+    }, 60000);
+    return () => clearInterval(t);
+  }, []);
 
   async function check() {
     const id = checkId.trim();
